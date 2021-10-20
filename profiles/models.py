@@ -7,8 +7,7 @@ import sys
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
-from django.contrib.auth.models import AbstractUser
-from django.urls import reverse
+from feed.models import Feed
 
 
 class MyUserManager(BaseUserManager):
@@ -46,37 +45,60 @@ class MyUserManager(BaseUserManager):
 class PhotosUser(models.Model):
 
     image = models.ImageField(verbose_name='Фотография')
+    slug = models.SlugField()
 
     def __str__(self):
         return self.id
 
+    def save(self, *args, **kwargs):
+        if self.image:
+            image = self.image
+            img = Image.open(image)
+            new_img = img.convert('RGB')
+            resized_new_img = new_img.resize((700, 400), Image.ANTIALIAS)
+            filestream = BytesIO()
+            resized_new_img.save(filestream, 'JPEG', quality=90)
+            filestream.seek(0)
+            name = '{}.{}'.format(*self.image.name.split('.'))
+            self.image = InMemoryUploadedFile(
+                filestream, 'ImageField', name, 'jpeg/image', sys.getsizeof(filestream), None
+            )
+        super().save(*args, **kwargs)
+
 class InfoUser(models.Model):
-    pass
+
+    birthday = models.CharField(verbose_name='День рождения', max_length=11, blank=True, null=True)
+    city = models.CharField(verbose_name='Город', max_length=30, blank=True, null=True)
+    status = models.CharField(verbose_name='Статус профиля', max_length=88, blank=True, null=True)
+    work = models.CharField(verbose_name='Работа', max_length=60, blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Информация о юзере'
+        verbose_name_plural = 'Информации'
 
 class SocialUser(AbstractBaseUser):
 
     first_name = models.CharField(verbose_name='Имя', max_length=35)
     last_name = models.CharField(verbose_name='Фамилия', max_length=40)
-    email = models.EmailField(verbose_name='Почта')
+    email = models.EmailField(verbose_name='Почта', unique=True)
+    phone = models.CharField(verbose_name='Телефон', max_length=18)
+    infouser = models.ForeignKey(InfoUser, verbose_name='Информация о юзере', on_delete=models.CASCADE, related_name='user')
+    feeds = models.ManyToManyField(Feed, verbose_name='Лента юзера', related_name='user')
     status_email = models.BooleanField(verbose_name='Email подтверждён', default=False)
     avatar = models.ImageField(verbose_name='Аватар', blank=True, null=True)
     friends = models.ManyToManyField('self', verbose_name='Подписчики', related_name='user')
     followers = models.ManyToManyField('self', verbose_name='Подписчики', related_name='user')
     photos = models.ManyToManyField(PhotosUser, verbose_name='Фотографии', related_name='user')
     videos = models.FileField(upload_to='files/', blank=True, null=True)
-    username = models.CharField(verbose_name='Прозвище/Слаг', unique=True)
+    username = models.CharField(verbose_name='Прозвище/Слаг', unique=True, max_length=40)
     date_add = models.DateTimeField(auto_now_add=True)
-
-
-
-
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
     objects = MyUserManager()
 
     def __str__(self):
-        return f""
+        return f"{self.first_name} | {self.last_name}"
 
     def save(self, *args, **kwargs):
         #
@@ -84,7 +106,7 @@ class SocialUser(AbstractBaseUser):
             image = self.avatar
             img = Image.open(image)
             new_img = img.convert('RGB')
-            resized_new_img = new_img.resize((150, 150), Image.ANTIALIAS)
+            resized_new_img = new_img.resize((200, 200), Image.ANTIALIAS)
             filestream = BytesIO()
             resized_new_img.save(filestream, 'JPEG', quality=90)
             filestream.seek(0)
