@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DSN</title>
+</head>
+<body>
+    <header class="py-3 mb-3 border-bottom">
+    <div class="container-fluid d-grid gap-3 align-items-center" style="grid-template-columns: 1fr 2fr;">
+      <div class="d-flex align-items-center">
+        <form class="w-100 me-3">
+          <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+        </form>
+
+        <div class="flex-shrink-0 dropdown">
+          <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://github.com/mdo.png" alt="mdo" class="rounded-circle" width="32" height="32">
+          </a>
+          <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+            <li><a class="dropdown-item" href="#">Моя страница</a></li>
+            <li><a class="dropdown-item" href="#">Настройки</a></li>
+            <li><a class="dropdown-item" href="#">Редактировать профиль</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Выйти</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+    <main>
+        <div class="container">
+            {% block content%}
+            {% endblock content %}
+        </div>
+    </main>
+    <footer class="py-3 my-4">
+    <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Пользовательские правила</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Условия конфидециальности</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Помощь</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">О нас</a></li>
+    </ul>
+    <p class="text-center text-muted">© 2021 Lautariano, Inc</p>
+  </footer>
+</body>
+</html>
