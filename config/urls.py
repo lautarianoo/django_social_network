@@ -22,7 +22,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('profiles.urls')),
-    path('feed/', include('feed.urls'))
+    path('feed/', include('feed.urls')),
+    path('group/', include('community.urls'))
 ]
 
 if settings.DEBUG:
