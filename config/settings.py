@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'profiles',
     'feed',
+    'community',
 
     'ckeditor',
     'ckeditor_uploader',

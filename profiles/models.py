@@ -91,6 +91,7 @@ class SocialUser(AbstractBaseUser):
     photos = models.ManyToManyField(PhotosUser, verbose_name='Фотографии', related_name='user')
     videos = models.FileField(upload_to='files/', blank=True, null=True)
     username = models.CharField(verbose_name='Прозвище/Слаг', unique=True, max_length=40, null=True)
+    groups = models.ManyToManyField('community.Group', verbose_name='Группы', related_name='user')
     date_add = models.DateTimeField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
