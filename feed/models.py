@@ -6,7 +6,7 @@ class Comment(models.Model):
     author = models.ForeignKey('profiles.SocialUser', verbose_name='Автор комментария', on_delete=models.CASCADE,
                                related_name='comments')
     parents = models.ManyToManyField('profiles.SocialUser', verbose_name='Родитель', related_name='comment')
-    content = RichTextUploadingField(verbose_name='Контент', max_length=1150)
+    content = RichTextUploadingField(blank=True, null=True, verbose_name='Контент', max_length=1150)
     likes = models.IntegerField(verbose_name='Лайки комментария', default=0)
     date_add = models.DateTimeField(auto_now_add=True)
 
@@ -16,7 +16,7 @@ class Comment(models.Model):
 
 class Feed(models.Model):
 
-    content = RichTextUploadingField()
+    content = RichTextUploadingField(blank=True, null=True, verbose_name='Контент', max_length=7000)
     comments = models.ManyToManyField(Comment, verbose_name='Комментарии', related_name='feed')
     likes = models.IntegerField(default=0, verbose_name='Кол-во лайков')
     date_add = models.DateTimeField(auto_now_add=True)

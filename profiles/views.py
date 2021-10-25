@@ -6,8 +6,8 @@ class BaseView(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'base.html', {})
 
-class MyProfileView(View):
+class ProfileView(View):
 
     def get(self, request, *args, **kwargs):
-        user =request.user
+        user = request.user
         return render(request, 'profiles/myprofile.html', {'user': user})

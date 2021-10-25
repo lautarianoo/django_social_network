@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import InfoGroup, Group, CategoryGroup
 
-# Register your models here.
+admin.site.register(Group)
+admin.site.register(InfoGroup)
+admin.site.register(CategoryGroup)
