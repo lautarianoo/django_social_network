@@ -1,5 +1,7 @@
+from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from django.views import View
+from .models import SocialUser
 
 class BaseView(View):
 
@@ -9,5 +11,7 @@ class BaseView(View):
 class ProfileView(View):
 
     def get(self, request, *args, **kwargs):
-        user = request.user
-        return render(request, 'profiles/myprofile.html', {'user': user})
+        context = {}
+        if request.user == SocialUser.objects.get(username=kwargs.get('username')):
+            context['user'] = request.user
+        return render(request, 'profiles/myprofile.html', context)

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-2">
+            <ul class="list-group">
+                <li class="list-group-item mb-2" ><a href="#" style="text-decoration: none;">Моя страница</a></li>
+                <li class="list-group-item mb-2" ><a href="#" style="text-decoration: none;">Новости</a></li>
+                <li class="list-group-item mb-2" ><a href="#" style="text-decoration: none;">Сообщения</a></li>
+                <li class="list-group-item mb-2" ><a href="#" style="text-decoration: none;">Друзья</a></li>
+                <li class="list-group-item mb-2" ><a href="#" style="text-decoration: none;">Сообщества</a></li>
+                <li class="list-group-item" ><a href="#" style="text-decoration: none;">Видео</a></li>
+            </ul>
+        </div>
+        <div class="col-10">
+            {% block profile %}
+            {% endblock profile %}
+        </div>
+    </div>
+{% endblock content %}
