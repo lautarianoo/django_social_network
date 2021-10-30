@@ -1,0 +1,12 @@
+{% extends 'base_for_templates.html' %}
+
+{% block content %}
+    <div class="container">
+    <form method="post" action="" class="form-control" style="margin-top: 10px" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Сохранить изменения</button>
+    </form>
+    </div>
+{% endblock content %}

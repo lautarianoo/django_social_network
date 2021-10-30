@@ -2,5 +2,19 @@
 
 {% block profile %}
     {% if user %}
+        <div class="row">
+            <div class="col-3" style="background-color: white; ">
+                <div class="">
+                    <img src="{{ user.avatar.src }}" alt="" width="250" height="250">
+                    <a class="btn btn-primary" href="{% url 'edit' %}" style="margin: 7%;">Редактировать профиль</a>
+                </div>
+            </div>
+            <div class="col-9"  style="background-color: white; ">
+
+            </div>
+        </div>
+        <div class="row">
+
+        </div>
     {% endif %}
 {% endblock profile %}
