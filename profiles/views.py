@@ -13,8 +13,11 @@ class ProfileView(View):
 
     def get(self, request, *args, **kwargs):
         context = {}
-        if request.user == SocialUser.objects.get(username=kwargs.get('username')):
+        if request.user == SocialUser.objects.get(username=kwargs.get('slug')):
             context['user'] = request.user
+        else:
+            context['user'] = ''
+            context['user2'] =  SocialUser.objects.get(username=kwargs.get('slug'))
         return render(request, 'profiles/myprofile.html', context)
 
 class EditProfile(View):
@@ -22,24 +25,27 @@ class EditProfile(View):
     def get(self, request, *args, **kwargs):
         form = EditProfileForm(initial={'username': request.user.username, 'first_name': request.user.first_name,
                                         'avatar': request.user.avatar, 'last_name': request.user.last_name, 'phone': request.user.phone,
-                                        'birthday': request.user.infouser.birthday, 'city': request.user.infouser.city, 'status': request.user.infouser, 'work': request.user.infouser.city})
+                                        'birthday': request.user.infouser.birthday, 'city': request.user.infouser.city, 'status': request.user.infouser.status, 'work': request.user.infouser.city})
         return render(request, 'profiles/edit.html', {'form': form})
 
     def post(self, request, *args, **kwargs):
         form = EditProfileForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             data = form.cleaned_data
-
             user = request.user
             user.username = data['username']
             user.first_name = data['first_name']
-            user.avatar = data['avatar']
+            if data['avatar']:
+                user.avatar = data['avatar']
+            else:
+                user.avatar = request.user.avatar
             user.last_name = data['last_name']
             user.phone = data['phone']
             user.infouser.birthday = data['birthday']
             user.infouser.city = data['city']
             user.infouser.status = data['status']
             user.infouser.work = data['work']
+            user.infouser.save()
             user.save()
             return redirect('profile', username=user.username)
         return render(request, 'profiles/edit.html', {'form': form})
