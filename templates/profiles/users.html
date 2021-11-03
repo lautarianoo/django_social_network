@@ -1,0 +1,25 @@
+{% extends 'base_for_templates.html' %}
+
+{% block profile %}
+    <div class="row">
+        <div class="col-6">
+            {% for user in users %}
+            <div class="card mb-3" style="max-width: 540px;">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <img src="{{ user.avatar.url }}" class="img-fluid rounded-start" alt="...">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
+            <p class="card-text">{{ user.infouser.work }}</p>
+            <p class="card-text"><a href="#">Написать сообщение</a></p>
+            <a href="#" class="btn btn-primary">Принять заявку</a>
+          </div>
+        </div>
+      </div>
+    </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock profile %}

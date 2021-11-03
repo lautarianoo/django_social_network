@@ -49,3 +49,13 @@ class EditProfile(View):
             user.save()
             return redirect('profile', username=user.username)
         return render(request, 'profiles/edit.html', {'form': form})
+
+class FriendsView(View):
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'profiles/friends.html', {'users': request.user.friends.all()})
+
+class FollowersView(View):
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'profiles/users.html', {'users': request.user.friends.all()})
