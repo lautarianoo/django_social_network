@@ -58,4 +58,30 @@ class FriendsView(View):
 class FollowersView(View):
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'profiles/users.html', {'users': request.user.friends.all()})
+        return render(request, 'profiles/users.html', {'users': request.user.followers.all()})
+
+class AcceptFriend(View):
+
+    def get(self, request, *args, **kwargs):
+        follower = SocialUser.objects.get(username=kwargs.get('username'))
+        follower.friends.add(request.user)
+        request.user.followers.remove(follower)
+        request.user.friends.add(follower)
+        return redirect('friends')
+
+class SubscribeView(View):
+
+    def get(self, request, *args, **kwargs):
+        subscriber = SocialUser.objects.get(username=kwargs.get('username'))
+        subscriber.followers.add(request.user)
+        request.user.subscribers.add(subscriber)
+        return redirect('profile', slug=kwargs.get('username'))
+
+class DeleteFriend(View):
+
+    def get(self, request, *args, **kwargs):
+        friend = SocialUser.objects.get(username=kwargs.get('username'))
+        friend.subscribers.add(request.user)
+        request.user.friends.remove(friend)
+        request.user.followers.add(friend)
+        return redirect('profile', slug=kwargs.get('username'))

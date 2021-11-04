@@ -11,7 +11,7 @@
         </div>
         <div class="col-md-8">
           <div class="card-body">
-            <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
+              <h5 class="card-title"><a href="{% url 'profile' slug=user.username %}">{{ user.first_name }} {{ user.last_name }}</a></h5>
             <p class="card-text">{{ user.infouser.work }}</p>
             <p class="card-text"><a href="#">Написать сообщение</a></p>
           </div>
