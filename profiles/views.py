@@ -1,13 +1,55 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views import View
-from .models import SocialUser
-from .forms import EditProfileForm
+from .models import SocialUser, InfoUser
+from .forms import EditProfileForm, LoginForm, RegisterForm
+
 
 class BaseView(View):
 
     def get(self, request, *args, **kwargs):
         return render(request, 'base.html', {})
+
+class LoginView(View):
+
+    def get(self, request, *args, **kwargs):
+        form = LoginForm()
+        return render(request, 'profiles/login.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = LoginForm(request.POST or None)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            user = authenticate(request, email=email, password=password)
+            if user:
+                login(request, user)
+                return HttpResponseRedirect(reverse('base'))
+        return render(request, 'profiles/login.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('login'))
+
+class RegisterView(View):
+
+    def get(self, request, *args, **kwargs):
+        form = RegisterForm()
+        return render(request, 'profiles/register.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = RegisterForm(request.POST or None)
+        if form.is_valid():
+            new_user = form.save(commit=False)
+            infouser = InfoUser.objects.create()
+            new_user.infouser = infouser
+            new_user.set_password(form.cleaned_data['password1'])
+            new_user.save()
+            return HttpResponseRedirect(reverse('login'))
+        return render(request, 'profiles/register.html', {'form': form})
+
 
 class ProfileView(View):
 
@@ -65,6 +107,7 @@ class AcceptFriend(View):
     def get(self, request, *args, **kwargs):
         follower = SocialUser.objects.get(username=kwargs.get('username'))
         follower.friends.add(request.user)
+        follower.subscribers.remove(request.user)
         request.user.followers.remove(follower)
         request.user.friends.add(follower)
         return redirect('friends')
@@ -81,6 +124,7 @@ class DeleteFriend(View):
 
     def get(self, request, *args, **kwargs):
         friend = SocialUser.objects.get(username=kwargs.get('username'))
+        friend.friends.remove(request.user)
         friend.subscribers.add(request.user)
         request.user.friends.remove(friend)
         request.user.followers.add(friend)
