@@ -5,16 +5,18 @@ from django.urls import reverse
 from django.views import View
 from .models import SocialUser, InfoUser
 from .forms import EditProfileForm, LoginForm, RegisterForm
+from .mixins import PermissionMixin
 
-
-class BaseView(View):
-
-    def get(self, request, *args, **kwargs):
-        return render(request, 'base.html', {})
+#class BaseView(View):
+#
+#    def get(self, request, *args, **kwargs):
+#        return render(request, 'base.html', {})
 
 class LoginView(View):
 
     def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('profile', slug=request.user.username)
         form = LoginForm()
         return render(request, 'profiles/login.html', {'form': form})
 
@@ -36,6 +38,8 @@ def logout_view(request):
 class RegisterView(View):
 
     def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('profile', slug=request.user.username)
         form = RegisterForm()
         return render(request, 'profiles/register.html', {'form': form})
 
@@ -51,7 +55,7 @@ class RegisterView(View):
         return render(request, 'profiles/register.html', {'form': form})
 
 
-class ProfileView(View):
+class ProfileView(PermissionMixin, View):
 
     def get(self, request, *args, **kwargs):
         context = {}

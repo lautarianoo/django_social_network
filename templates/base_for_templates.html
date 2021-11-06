@@ -2,6 +2,7 @@
 
 {% block content %}
     <div class="row">
+        {% if request.user.is_authenticated %}
         <div class="col-2">
             <ul class="list-group">
                 <li class="list-group-item mb-2" ><a href="{% url 'profile' slug=request.user.username %}" style="text-decoration: none;">Моя страница</a></li>
@@ -12,6 +13,7 @@
                 <li class="list-group-item" ><a href="#" style="text-decoration: none;">Видео</a></li>
             </ul>
         </div>
+        {% endif %}
         <div class="col-10">
             {% block profile %}
             {% endblock profile %}
