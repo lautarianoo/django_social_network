@@ -28,12 +28,12 @@ class LoginView(View):
             user = authenticate(request, email=email, password=password)
             if user:
                 login(request, user)
-                return HttpResponseRedirect(reverse('base'))
+                return redirect('profile', slug=user.username)
         return render(request, 'profiles/login.html', {'form': form})
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse('login'))
+    return redirect('login')
 
 class RegisterView(View):
 
@@ -106,6 +106,15 @@ class FollowersView(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'profiles/users.html', {'users': request.user.followers.all()})
 
+class SubscribeView(View):
+
+    def get(self, request, *args, **kwargs):
+        subscriber = SocialUser.objects.get(username=kwargs.get('username'))
+        subscriber.followers.add(request.user)
+        request.user.subscribers.add(subscriber)
+
+        return redirect('profile', slug=kwargs.get('username'))
+
 class AcceptFriend(View):
 
     def get(self, request, *args, **kwargs):
@@ -116,20 +125,12 @@ class AcceptFriend(View):
         request.user.friends.add(follower)
         return redirect('friends')
 
-class SubscribeView(View):
-
-    def get(self, request, *args, **kwargs):
-        subscriber = SocialUser.objects.get(username=kwargs.get('username'))
-        subscriber.followers.add(request.user)
-        request.user.subscribers.add(subscriber)
-        return redirect('profile', slug=kwargs.get('username'))
-
 class DeleteFriend(View):
 
     def get(self, request, *args, **kwargs):
         friend = SocialUser.objects.get(username=kwargs.get('username'))
+        request.user.friends.remove(friend)
         friend.friends.remove(request.user)
         friend.subscribers.add(request.user)
-        request.user.friends.remove(friend)
         request.user.followers.add(friend)
         return redirect('profile', slug=kwargs.get('username'))

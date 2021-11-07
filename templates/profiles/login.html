@@ -1,32 +1,29 @@
 {% extends 'base_for_templates.html' %}
-
+{% load crispy_forms_tags %}
 {% block profile %}
     <div class="container">
  <div class="row">
+     <div class="col-4"></div>
 
- <div class="col-md-offset-3 col-md-7 mb-5">
- <form class="form-horizontal" method="post">
-	 	{% csrf_token %}
-		 <span class="heading">АВТОРИЗАЦИЯ</span>
-		 <div class="form-group">
-		 <input type="email" class="form-control" id="inputEmail" placeholder="E-mail" name="email">
-		 <i class="fa fa-user"></i>
-		 </div>
-		 <div class="form-group help">
-		 <input type="password" class="form-control" id="inputPassword1" placeholder="Password" name="password">
-		 <i class="fa fa-lock"></i>
-		 <a href="#" class="fa fa-question-circle"></a>
-		 </div>
-		 <div class="form-group">
+ <div class="col-6">
+     <h2 class="text-center">АВТОРИЗАЦИЯ</h2>
+ <form action="" class="form-control" method="post">{% csrf_token %}
+
+		 {{ form|crispy }}
+        <div class="form-group">
 		 <div class="main-checkbox">
 		 <input type="checkbox" value="none" id="checkbox1" name="check"/>
 		 <label for="checkbox1"></label>
 		 </div>
 		 <span class="text">Запомнить</span>
-             <span>Нету аккаунта? <a href="">Зарегистрироваться</a></span>
-		 <button type="submit" class="btn btn-default">ВОЙТИ</button>
+		 <button type="submit" class="btn btn-primary">ВОЙТИ</button>
 		 </div>
  </form>
+     <div class="mt-5">
+     <h4 class="text-center">Нету аккаунта?</h4>
+     <p class="text-center"><a class="btn btn-success" href="#">Зарегистрироваться</a></p>
+     <div class="col-2"></div>
+     </div>
  </div>
 
  </div>

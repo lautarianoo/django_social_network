@@ -19,19 +19,18 @@
         <form class="w-100 me-3">
           <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
         </form>
-
+        {% if request.user.is_authenticated %}
         <div class="flex-shrink-0 dropdown">
           <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
             <img src="{{ request.user.avatar.url }}" alt="mdo" class="rounded-circle" width="40" height="40">
           </a>
           <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-            <li><a class="dropdown-item" href="#">New project...</a></li>
-            <li><a class="dropdown-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item" href="#">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Sign out</a></li>
+            <li><a class="dropdown-item" href="{% url 'profile' slug=request.user.username %}">Моя страница</a></li>
+            <li><a class="dropdown-item" href="#">Настройки</a></li>
+            <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
           </ul>
         </div>
+          {% endif %}
       </div>
     </div>
   </header>
