@@ -76,6 +76,9 @@ class InfoUser(models.Model):
         verbose_name = 'Информация о юзере'
         verbose_name_plural = 'Информации'
 
+class FollowersUser(models.Model):
+    pass
+
 class SocialUser(AbstractBaseUser):
 
     first_name = models.CharField(verbose_name='Имя', max_length=35)
@@ -87,8 +90,6 @@ class SocialUser(AbstractBaseUser):
     status_email = models.BooleanField(verbose_name='Email подтверждён', default=False)
     avatar = models.ImageField(verbose_name='Аватар', blank=True, null=True)
     friends = models.ManyToManyField('self', verbose_name='Друзья', related_name='user', blank=True)
-    followers = models.ManyToManyField('self', verbose_name='Подписчики', related_name='user', blank=True)
-    subscribers = models.ManyToManyField('self', verbose_name='Подписки', related_name='user', blank=True)
     photos = models.ManyToManyField(PhotosUser, verbose_name='Фотографии', related_name='user', blank=True)
     videos = models.FileField(upload_to='files/', blank=True, null=True)
     username = models.CharField(verbose_name='Прозвище/Слаг', unique=True, max_length=40, null=True)

@@ -110,9 +110,8 @@ class SubscribeView(View):
 
     def get(self, request, *args, **kwargs):
         subscriber = SocialUser.objects.get(username=kwargs.get('username'))
-        subscriber.followers.add(request.user)
         request.user.subscribers.add(subscriber)
-
+        subscriber.followers.add(request.user)
         return redirect('profile', slug=kwargs.get('username'))
 
 class AcceptFriend(View):
