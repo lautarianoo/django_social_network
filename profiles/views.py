@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
-from .models import SocialUser, InfoUser
+from .models import SocialUser, InfoUser, SubscribersUser, FollowersUser
 from .forms import EditProfileForm, LoginForm, RegisterForm
 from .mixins import PermissionMixin
 
@@ -49,6 +49,7 @@ class RegisterView(View):
             new_user = form.save(commit=False)
             infouser = InfoUser.objects.create()
             new_user.infouser = infouser
+            subscribers = SubscribersUser.objects.create()
             new_user.set_password(form.cleaned_data['password1'])
             new_user.save()
             return HttpResponseRedirect(reverse('login'))
@@ -110,26 +111,6 @@ class SubscribeView(View):
 
     def get(self, request, *args, **kwargs):
         subscriber = SocialUser.objects.get(username=kwargs.get('username'))
-        request.user.subscribers.add(subscriber)
-        subscriber.followers.add(request.user)
+
         return redirect('profile', slug=kwargs.get('username'))
 
-class AcceptFriend(View):
-
-    def get(self, request, *args, **kwargs):
-        follower = SocialUser.objects.get(username=kwargs.get('username'))
-        follower.friends.add(request.user)
-        follower.subscribers.remove(request.user)
-        request.user.followers.remove(follower)
-        request.user.friends.add(follower)
-        return redirect('friends')
-
-class DeleteFriend(View):
-
-    def get(self, request, *args, **kwargs):
-        friend = SocialUser.objects.get(username=kwargs.get('username'))
-        request.user.friends.remove(friend)
-        friend.friends.remove(request.user)
-        friend.subscribers.add(request.user)
-        request.user.followers.add(friend)
-        return redirect('profile', slug=kwargs.get('username'))

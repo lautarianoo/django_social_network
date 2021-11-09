@@ -77,7 +77,32 @@ class InfoUser(models.Model):
         verbose_name_plural = 'Информации'
 
 class FollowersUser(models.Model):
-    pass
+    followers = models.ManyToManyField(
+        'SocialUser',
+        verbose_name="Подписчик",
+        blank=True,
+        related_name='owner')
+
+    class Meta:
+        verbose_name = "Подписчик"
+        verbose_name_plural = "Подписчики"
+
+    def __str__(self):
+        return "{}".format(self.id)
+
+class SubscribersUser(models.Model):
+    subscribers = models.ManyToManyField(
+        'SocialUser',
+        verbose_name="Подписота",
+        blank=True,
+        related_name='owner2')
+
+    class Meta:
+        verbose_name = "Подписота"
+        verbose_name_plural = "Подписки"
+
+    def __str__(self):
+        return "{}".format(self.id)
 
 class SocialUser(AbstractBaseUser):
 
@@ -90,6 +115,8 @@ class SocialUser(AbstractBaseUser):
     status_email = models.BooleanField(verbose_name='Email подтверждён', default=False)
     avatar = models.ImageField(verbose_name='Аватар', blank=True, null=True)
     friends = models.ManyToManyField('self', verbose_name='Друзья', related_name='user', blank=True)
+    followers = models.ForeignKey(FollowersUser, verbose_name='Подписчики', on_delete=models.CASCADE, blank=True, null=True)
+    subscribers = models.ForeignKey(SubscribersUser, verbose_name='Подписки', on_delete=models.CASCADE, blank=True, null=True)
     photos = models.ManyToManyField(PhotosUser, verbose_name='Фотографии', related_name='user', blank=True)
     videos = models.FileField(upload_to='files/', blank=True, null=True)
     username = models.CharField(verbose_name='Прозвище/Слаг', unique=True, max_length=40, null=True)
