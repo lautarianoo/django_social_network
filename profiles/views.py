@@ -48,8 +48,15 @@ class RegisterView(View):
         if form.is_valid():
             new_user = form.save(commit=False)
             infouser = InfoUser.objects.create()
+            infouser.city = ''
+            infouser.status = ''
+            infouser.birthday = ''
+            infouser.work = ''
             new_user.infouser = infouser
             subscribers = SubscribersUser.objects.create()
+            followers = FollowersUser.objects.create()
+            new_user.subscribers = subscribers
+            new_user.followers = followers
             new_user.set_password(form.cleaned_data['password1'])
             new_user.save()
             return HttpResponseRedirect(reverse('login'))
@@ -67,7 +74,7 @@ class ProfileView(PermissionMixin, View):
             context['user2'] =  SocialUser.objects.get(username=kwargs.get('slug'))
         return render(request, 'profiles/myprofile.html', context)
 
-class EditProfile(View):
+class EditProfile(PermissionMixin, View):
 
     def get(self, request, *args, **kwargs):
         form = EditProfileForm(initial={'username': request.user.username, 'first_name': request.user.first_name,
@@ -94,23 +101,24 @@ class EditProfile(View):
             user.infouser.work = data['work']
             user.infouser.save()
             user.save()
-            return redirect('profile', username=user.username)
+            return redirect('profile', slug=user.username)
         return render(request, 'profiles/edit.html', {'form': form})
 
-class FriendsView(View):
+class FriendsView(PermissionMixin, View):
 
     def get(self, request, *args, **kwargs):
         return render(request, 'profiles/friends.html', {'users': request.user.friends.all()})
 
-class FollowersView(View):
+class FollowersView(PermissionMixin, View):
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'profiles/users.html', {'users': request.user.followers.all()})
+        return render(request, 'profiles/users.html', {'users': request.user.followers.followers.all()})
 
 class SubscribeView(View):
 
     def get(self, request, *args, **kwargs):
         subscriber = SocialUser.objects.get(username=kwargs.get('username'))
-
+        subscriber.followers.followers.add(request.user)
+        request.user.subscribers.subscribers.add(subscriber)
         return redirect('profile', slug=kwargs.get('username'))
 

@@ -24,7 +24,7 @@ class RegisterForm(forms.ModelForm):
 
     class Meta:
         model = SocialUser
-        fields = ('email', 'phone', 'first_name', 'last_name', 'avatar')
+        fields = ('username', 'email', 'phone', 'first_name', 'last_name')
 
     def clean_password2(self):
         data = self.cleaned_data

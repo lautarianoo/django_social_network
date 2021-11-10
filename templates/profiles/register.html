@@ -1,10 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base_for_templates.html' %}
+{% load crispy_forms_tags %}
+{% block profile %}
+    <div class="container">
+ <div class="row">
+     <div class="col-4"></div>
 
-</body>
-</html>
+ <div class="col-6">
+     <h2 class="text-center">РЕГИСТРАЦИЯ</h2>
+ <form action="" class="form-control" method="post">{% csrf_token %}
+
+		 {{ form|crispy }}
+        <div class="form-group">
+		 <div class="main-checkbox">
+		 <input type="checkbox" value="none" id="checkbox1" name="check"/>
+		 <label for="checkbox1"></label>
+		 </div>
+		 <span class="text">Запомнить</span>
+		 <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+		 </div>
+ </form>
+     <div class="mt-5">
+     <h4 class="text-center">Есть аккаунт?</h4>
+     <p class="text-center"><a class="btn btn-success" href="{% url 'login' %}">Войти</a></p>
+     <div class="col-2"></div>
+     </div>
+ </div>
+
+ </div>
+</div>
+{% endblock profile %}

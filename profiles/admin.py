@@ -84,3 +84,5 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(SocialUser, UserAdmin)
 admin.site.register(InfoUser)
 admin.site.register(PhotosUser)
+admin.site.register(FollowersUser)
+admin.site.register(SubscribersUser)

@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-3" style="background-color: white; ">
                 <div class="">
-                    <img src="{{ user.avatar.url }}" alt="" width="250" height="250">
+                    <img src="{% if user.avatar %}{{ user.avatar.url }} {% endif %}" alt="" width="250" height="250">
                     <a class="btn btn-primary" href="{% url 'edit' %}" style="margin: 7%;">Редактировать профиль</a>
                 </div>
             </div>
@@ -25,11 +25,11 @@
                         <p class="text-center">друзей</p>
                     </div>
                     <div class="col-2">
-                        <h5 class="text-center"><a>{{ user.followers.count }}</a></h5>
+                        <h5 class="text-center"><a>{{ user.followers.followers.count }}</a></h5>
                         <p class="text-center">подписчиков</p>
                     </div>
                     <div class="col-2">
-                        <h5 class="text-center"><a>{{ user.subscribers.count }}</a></h5>
+                        <h5 class="text-center"><a>{{ user.subscribers.subscribers.count }}</a></h5>
                         <p class="text-center">подписок</p>
                     </div>
                     <div class="col-2">
@@ -49,11 +49,11 @@
                     <img src="{{ user2.avatar.url }}" alt="" width="250" height="250">
                     {% if user2 in request.user.friends.all %}
                         <a class="btn btn-success disabled" style="margin: 7%;">У вас в друзьях</a>
-                        <a class="btn btn-danger" style="margin: 7%;" href="{% url 'delete-friend' username=user2.username %}">Удалить из друзей</a>
-                    {% elif user2 in request.user.followers.all %}
-                        <a class="btn btn-primary" href="{% url 'add-friend' username=user2.username %}" style="margin: 7%;">Принять заявку</a>
+                        <a class="btn btn-danger" style="margin: 7%;" href="#">Удалить из друзей</a>
+                    {% elif user2 in request.user.followers.followers.all %}
+                        <a class="btn btn-primary" href="#" style="margin: 7%;">Принять заявку</a>
                         <p style="font-size: small; margin: 7%;">{{ user2.first_name }} подписан(а) на вас</p>
-                    {% elif user2 in request.user.subscribers.all %}
+                    {% elif user2 in request.user.subscribers.subscribers.all %}
                         <a class="btn btn-primary disabled" style="margin: 7%;">Вы подписаны</a>
                         <a class="btn btn-primary" style="margin: 7%;" href="#">Отписаться</a>
                     {% else %}
@@ -63,10 +63,10 @@
             </div>
             <div class="col-9"  style="background-color: white; ">
                 <h4>{{ user2.first_name }} {{ user2.last_name }}</h4>
-                <p>{{ user2.infouser.status }}</p>
+                <p>{% if user2.infouser.status %}{{ user2.infouser.status }}{% endif %}</p>
                 <hr>
                 <div class="m-3">
-                    <p style="color: #918a8a">День рождения: {{ user2.infouser.birthday }}</p>
+                    <p style="color: #918a8a">День рождения: {% if user2.infouser.birthday %}{{ user2.infouser.birthday }}{% else %}-{% endif %}</p>
                     <p style="color: #918a8a">Город:  {{ user2.infouser.city }}</p>
                     <p style="color: #918a8a">Работа: {{ user2.infouser.work }}</p>
                 </div>
@@ -77,11 +77,11 @@
                         <p class="text-center">друзей</p>
                     </div>
                     <div class="col-2">
-                        <h5 class="text-center"><a>{{ user2.followers.count }}</a></h5>
+                        <h5 class="text-center"><a>{{ user2.followers.followers.count }}</a></h5>
                         <p class="text-center">подписчиков</p>
                     </div>
                     <div class="col-2">
-                        <h5 class="text-center"><a>{{ user2.subscribers.count }}</a></h5>
+                        <h5 class="text-center"><a>{{ user2.subscribers.subscribers.count }}</a></h5>
                         <p class="text-center">подписок</p>
                     </div>
                     <div class="col-2">
