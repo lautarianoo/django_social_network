@@ -1,11 +1,11 @@
 {% extends 'base_for_templates.html' %}
-
+{% load static %}
 {% block profile %}
     {% if user %}
         <div class="row">
             <div class="col-3" style="background-color: white; ">
                 <div class="">
-                    <img src="{% if user.avatar %}{{ user.avatar.url }} {% endif %}" alt="" width="250" height="250">
+                    <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'css/camera_200.png' %} {% endif %}" alt="" width="250" height="250">
                     <a class="btn btn-primary" href="{% url 'edit' %}" style="margin: 7%;">Редактировать профиль</a>
                 </div>
             </div>
@@ -46,18 +46,19 @@
         <div class="row">
             <div class="col-3" style="background-color: white; ">
                 <div class="">
-                    <img src="{{ user2.avatar.url }}" alt="" width="250" height="250">
+                    <img src="{% if user2.avatar %}{{ user2.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" width="250" height="250">
+                    <a href="#" class="btn-primary btn m-2">Написать сообщение</a>
                     {% if user2 in request.user.friends.all %}
-                        <a class="btn btn-success disabled" style="margin: 7%;">У вас в друзьях</a>
-                        <a class="btn btn-danger" style="margin: 7%;" href="#">Удалить из друзей</a>
+                        <a class="btn btn-success disabled m-2" style="">У вас в друзьях</a>
+                        <a class="btn btn-danger m-2" style="" href="{% url 'delete-friend' username=user2.username %}">Удалить из друзей</a>
                     {% elif user2 in request.user.followers.followers.all %}
-                        <a class="btn btn-primary" href="#" style="margin: 7%;">Принять заявку</a>
-                        <p style="font-size: small; margin: 7%;">{{ user2.first_name }} подписан(а) на вас</p>
+                        <a class="btn btn-primary m-2" href="{% url 'add-friend' username=user2.username %}">Принять заявку</a>
+                        <p class="m-2" style="font-size: small;">{{ user2.first_name }} подписан(а) на вас</p>
                     {% elif user2 in request.user.subscribers.subscribers.all %}
-                        <a class="btn btn-primary disabled" style="margin: 7%;">Вы подписаны</a>
-                        <a class="btn btn-primary" style="margin: 7%;" href="#">Отписаться</a>
+                        <a class="btn btn-primary disabled m-2" style="">Вы подписаны</a>
+                        <a class="btn btn-primary m-2"  href="{% url 'unsubscribe' username=user2.username %}">Отписаться</a>
                     {% else %}
-                        <a class="btn btn-primary text-center" style="margin-left: 23%; margin-top: 10%" href="{% url 'subscribe' username=user2.username %}">Подписаться</a>
+                        <a class="btn btn-primary text-center m-2" href="{% url 'subscribe' username=user2.username %}">Подписаться</a>
                     {% endif %}
                 </div>
             </div>

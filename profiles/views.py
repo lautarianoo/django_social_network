@@ -114,6 +114,11 @@ class FollowersView(PermissionMixin, View):
     def get(self, request, *args, **kwargs):
         return render(request, 'profiles/users.html', {'users': request.user.followers.followers.all()})
 
+class SubscribersView(View):
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'profiles/subscribers.html', {"users": request.user.subscribers.subscribers.all()})
+
 class SubscribeView(View):
 
     def get(self, request, *args, **kwargs):
@@ -121,4 +126,34 @@ class SubscribeView(View):
         subscriber.followers.followers.add(request.user)
         request.user.subscribers.subscribers.add(subscriber)
         return redirect('profile', slug=kwargs.get('username'))
+
+class AcceptFriend(View):
+
+    def get(self, request, *args, **kwargs):
+        follower = SocialUser.objects.get(username=kwargs.get('username'))
+        request.user.followers.followers.remove(follower)
+        follower.subscribers.subscribers.remove(request.user)
+        request.user.friends.add(follower)
+        follower.friends.add(request.user)
+        return redirect('profile', slug=kwargs.get('username'))
+
+class DeleteFriend(View):
+
+    def get(self, request, *args, **kwargs):
+        friend = SocialUser.objects.get(username=kwargs.get('username'))
+        friend.friends.remove(request.user)
+        request.user.friends.remove(friend)
+        friend.subscribers.subscribers.add(request.user)
+        request.user.followers.followers.add(friend)
+        return redirect('profile', slug=kwargs.get('username'))
+
+class Unsubscribe(View):
+
+    def get(self, request, *args, **kwargs):
+        subscriber = SocialUser.objects.get(username=kwargs.get('username'))
+        subscriber.followers.followers.remove(request.user)
+        request.user.subscribers.subscribers.remove(subscriber)
+        return redirect('profile', slug=kwargs.get('username'))
+
+
 

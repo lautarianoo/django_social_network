@@ -1,5 +1,5 @@
 {% extends 'base_for_templates.html' %}
-
+{% load static %}
 {% block profile %}
     <div class="row">
         <div class="col-6">
@@ -7,14 +7,14 @@
             <div class="card mb-3" style="max-width: 540px;">
       <div class="row g-0">
         <div class="col-md-4">
-          <img src="{{ user.avatar.url }}" class="img-fluid rounded-start" alt="...">
+          <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" class="img-fluid rounded-start" alt="...">
         </div>
         <div class="col-md-8">
           <div class="card-body">
               <h5 class="card-title"><a href="{% url 'profile' slug=user.username %}">{{ user.first_name }} {{ user.last_name }}</a></h5>
             <p class="card-text">{{ user.infouser.work }}</p>
             <p class="card-text"><a href="#">Написать сообщение</a></p>
-            <a href="" class="btn btn-primary">Принять заявку</a>
+            <a href="{% url 'add-friend' username=user.username %}" class="btn btn-primary">Принять заявку</a>
           </div>
         </div>
       </div>

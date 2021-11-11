@@ -14,15 +14,12 @@
               <h5 class="card-title"><a href="{% url 'profile' slug=user.username %}">{{ user.first_name }} {{ user.last_name }}</a></h5>
             <p class="card-text">{{ user.infouser.work }}</p>
             <p class="card-text"><a href="#">Написать сообщение</a></p>
+            <a href="{% url 'unsubscribe' username=user.username %}" class="btn btn-primary">Отписаться</a>
           </div>
         </div>
       </div>
     </div>
             {% endfor %}
         </div>
-    <div class="col-4">
-        <a class="btn btn-success" href="{% url 'followers' %}">Заявки в друзья</a>
-        <p class="mt-2"><a class="btn btn-success" href="{% url 'subscribers' %}">Подписки</a></p>
-    </div>
     </div>
 {% endblock profile %}
