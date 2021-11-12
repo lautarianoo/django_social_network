@@ -17,8 +17,8 @@
         </a>
 
       <div class="d-flex align-items-center">
-        <form class="w-100 me-3">
-          <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+        <form action="{% url 'search' %}" class="w-100 me-3" method="get">
+          <input type="search" class="form-control" placeholder="Search..." aria-label="Search" name="q">
         </form>
         {% if request.user.is_authenticated %}
         <div class="flex-shrink-0 dropdown">

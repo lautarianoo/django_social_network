@@ -121,6 +121,7 @@ class SocialUser(AbstractBaseUser):
     videos = models.FileField(upload_to='files/', blank=True, null=True)
     username = models.CharField(verbose_name='Никнейм', unique=True, max_length=40, null=True)
     groups = models.ManyToManyField('community.Group', verbose_name='Группы', related_name='user', blank=True)
+    full_name = models.CharField(verbose_name='Полное имя', max_length=75, blank=True, null=True)
     date_add = models.DateTimeField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -144,6 +145,8 @@ class SocialUser(AbstractBaseUser):
             self.avatar = InMemoryUploadedFile(
                 filestream, 'ImageField', name, 'jpeg/image', sys.getsizeof(filestream), None
             )
+        if not self.full_name:
+            self.full_name = f'{self.first_name} {self.last_name}'
         super().save(*args, **kwargs)
 
     class Meta:

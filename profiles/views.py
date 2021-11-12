@@ -6,11 +6,22 @@ from django.views import View
 from .models import SocialUser, InfoUser, SubscribersUser, FollowersUser
 from .forms import EditProfileForm, LoginForm, RegisterForm
 from .mixins import PermissionMixin
+from community.models import Group
 
 #class BaseView(View):
 #
 #    def get(self, request, *args, **kwargs):
 #        return render(request, 'base.html', {})
+
+class MainSearchView(View):
+
+    def get(self, request, *args, **kwargs):
+        users = SocialUser.objects.filter(full_name__icontains=request.GET.get('q'))
+        community = Group.objects.filter(title__icontains=request.GET.get('q'))
+        first_5_users = [users[user] for user in range(len(users)) if user <= 5]
+        first_5_group = [community[group] for group in range(len(community)) if group <= 5]
+        return render(request, 'searching.html', {'users': users, 'communities': community, 'first_5_users': first_5_users,
+                                                  'first_5_group': first_5_group})
 
 class LoginView(View):
 
@@ -154,6 +165,5 @@ class Unsubscribe(View):
         subscriber.followers.followers.remove(request.user)
         request.user.subscribers.subscribers.remove(subscriber)
         return redirect('profile', slug=kwargs.get('username'))
-
 
 
