@@ -23,6 +23,13 @@ class MainSearchView(View):
         return render(request, 'searching.html', {'users': users, 'communities': community, 'first_5_users': first_5_users,
                                                   'first_5_group': first_5_group})
 
+class FriendSearchView(View):
+
+    def get(self, request, *args, **kwargs):
+        friends = SocialUser.objects.filter(full_name__icontains=request.GET.get('q'), friends=request.user)
+        users = SocialUser.objects.filter(full_name__icontains=request.GET.get('q'))
+        return render(request, 'profiles/search-friend.html', {'friends': friends, 'users': users})
+
 class LoginView(View):
 
     def get(self, request, *args, **kwargs):

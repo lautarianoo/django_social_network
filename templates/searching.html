@@ -5,7 +5,9 @@
     <div class="row">
         <h4>Люди</h4>
         {% if users %}
+        <p><a href="{% url 'search-friend'  %}">Посмотреть всё ></a></p>
             {% for user in first_5_users %}
+                {% if user != request.user %}
                  <div class="card mb-3" style="max-width: 540px;">
                   <div class="row g-0">
                     <div class="col-md-4">
@@ -20,6 +22,7 @@
                     </div>
                   </div>
                 </div>
+                {% endif %}
             {% endfor %}
         {% else %}
             <p>Не найдено</p>
@@ -27,6 +30,7 @@
         <hr>
         <h4>Сообщества</h4>
         {% if communities %}
+            <p><a href="#">Посмотреть всё >>></a></p>
             {% for group in first_5_group %}
                 <div class="card mb-3" style="max-width: 540px;">
                   <div class="row g-0">
