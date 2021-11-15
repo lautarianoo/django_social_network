@@ -3,9 +3,10 @@
 
 {% block profile %}
     <div class="row">
+        <div class="col-8">
         <h4>Люди</h4>
         {% if users %}
-        <p><a href="{% url 'search-friend'  %}">Посмотреть всё ></a></p>
+        <p><a href="{% url 'search-friend' %}">Посмотреть всё ></a></p>
             {% for user in first_5_users %}
                 {% if user != request.user %}
                  <div class="card mb-3" style="max-width: 540px;">
@@ -50,5 +51,6 @@
         {% else %}
             <p>Не найдено</p>
         {% endif %}
+        </div>
     </div>
 {% endblock profile %}

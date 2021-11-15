@@ -26,9 +26,12 @@ class MainSearchView(View):
 class FriendSearchView(View):
 
     def get(self, request, *args, **kwargs):
+        context = {}
         friends = SocialUser.objects.filter(full_name__icontains=request.GET.get('q'), friends=request.user)
         users = SocialUser.objects.filter(full_name__icontains=request.GET.get('q'))
-        return render(request, 'profiles/search-friend.html', {'friends': friends, 'users': users})
+        context['friends'] = friends
+        context['users'] = users
+        return render(request, 'profiles/search-friend.html', context)
 
 class LoginView(View):
 
