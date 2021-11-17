@@ -7,6 +7,7 @@ from .models import SocialUser, InfoUser, SubscribersUser, FollowersUser
 from .forms import EditProfileForm, LoginForm, RegisterForm
 from .mixins import PermissionMixin
 from community.models import Group
+from feed.forms import AddFeedForm
 
 #class BaseView(View):
 #
@@ -88,12 +89,23 @@ class ProfileView(PermissionMixin, View):
 
     def get(self, request, *args, **kwargs):
         context = {}
+        form = AddFeedForm()
+        context['form'] = form
         if request.user == SocialUser.objects.get(username=kwargs.get('slug')):
             context['user'] = request.user
         else:
             context['user'] = ''
             context['user2'] =  SocialUser.objects.get(username=kwargs.get('slug'))
         return render(request, 'profiles/myprofile.html', context)
+
+    def post(self, request, *args, **kwargs):
+        form = AddFeedForm(request.POST or None)
+        if form.is_valid():
+            new_feed = form.save(commit=False)
+            new_feed.save()
+            request.user.feeds.add(new_feed)
+            request.user.save()
+            return redirect('profile', slug=request.user.username)
 
 class EditProfile(PermissionMixin, View):
 
@@ -175,5 +187,4 @@ class Unsubscribe(View):
         subscriber.followers.followers.remove(request.user)
         request.user.subscribers.subscribers.remove(subscriber)
         return redirect('profile', slug=kwargs.get('username'))
-
 

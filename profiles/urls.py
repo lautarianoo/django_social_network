@@ -1,11 +1,13 @@
 from django.urls import path
 from .views import *
+from feed.views import AddFeedUser
 
 urlpatterns = [
     path('', LoginView.as_view(), name='login'),
     path('register/', RegisterView.as_view(), name='register'),
     path('logout/', logout_view, name='logout'),
     path('profile/<str:slug>/', ProfileView.as_view(), name='profile'),
+    path('profile/<str:slug>/', AddFeedUser.as_view(), name='add-feed'),
     path('edit/', EditProfile.as_view(), name='edit'),
     path('friends/', FriendsView.as_view(), name='friends'),
     path('followers/', FollowersView.as_view(), name='followers'),
