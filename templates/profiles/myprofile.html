@@ -41,9 +41,20 @@
                 <p>Что у вас нового?</p>
                     <form class="form-control" method="post">
                         {% csrf_token %}
+                        {{ form.media }}
                         {{ form.as_p }}
                         <button class="btn btn-light">Выложить новость</button>
                     </form>
+                <hr>
+                {% for feed in user.feeds.all %}
+                <div class="card mt-2">
+              <div class="card-body">
+                <h5 class="card-title"><img src="{{ user.avatar.url }}" alt="" height="50" width="50"> {{ user.first_name }} {{ user.last_name }}</h5>
+                <p class="card-text">{{ feed.content }}</p>
+                <p>Комментарии</p>
+              </div>
+            </div>
+                {% endfor %}
             </div>
         </div>
         <div class="row">
@@ -96,6 +107,16 @@
                         <h5 class="text-center"><a>{{ user2.photos.count }}</a></h5>
                         <p class="text-center">фотографий</p>
                     </div>
+                    <hr>
+                    {% for feed in user2.feeds.all %}
+                <div class="card mt-2">
+              <div class="card-body">
+                <h5 class="card-title"><img src="{{ user2.avatar.url }}" alt="" height="50" width="50"> {{ user2.first_name }} {{ user2.last_name }}</h5>
+                <p class="card-text">{{ feed.content }}</p>
+                <p>Комментарии</p>
+              </div>
+            </div>
+                {% endfor %}
                 </div>
             </div>
         </div>

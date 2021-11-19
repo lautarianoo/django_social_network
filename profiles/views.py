@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
+
+from feed.models import Feed
 from .models import SocialUser, InfoUser, SubscribersUser, FollowersUser
 from .forms import EditProfileForm, LoginForm, RegisterForm
 from .mixins import PermissionMixin
@@ -101,7 +103,8 @@ class ProfileView(PermissionMixin, View):
     def post(self, request, *args, **kwargs):
         form = AddFeedForm(request.POST or None)
         if form.is_valid():
-            new_feed = form.save(commit=False)
+            data = form.cleaned_data
+            new_feed = Feed.objects.create(content=data['content'])
             new_feed.save()
             request.user.feeds.add(new_feed)
             request.user.save()
