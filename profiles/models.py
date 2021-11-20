@@ -47,9 +47,6 @@ class PhotosUser(models.Model):
     image = models.ImageField(verbose_name='Фотография')
     slug = models.SlugField()
 
-    def __str__(self):
-        return self.id
-
     def save(self, *args, **kwargs):
         if self.image:
             image = self.image

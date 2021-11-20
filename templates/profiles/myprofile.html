@@ -38,6 +38,16 @@
                     </div>
                 </div>
                 <hr>
+                <div class="row m-2">
+                {% if user.photos.all %}
+                <a>Посмотреть все >></a>
+                    {% for photo in last_5_photo %}
+                      <div class="col-2">
+                        <img src="{{ photo.image.url }}" alt="" height="110" width="110">
+                      </div>
+                    {% endfor %}
+                {% endif %}
+                </div>
                 <p>Что у вас нового?</p>
                     <form class="form-control" method="post">
                         {% csrf_token %}
@@ -108,6 +118,16 @@
                         <p class="text-center">фотографий</p>
                     </div>
                     <hr>
+                    <div class="row m-2">
+                <a>Посмотреть все >></a>
+                {% if user2.photos %}
+                    {% for photo in last_5_photo %}
+                      <div class="col-2">
+                        <img src="{{ photo.image.url }}" alt="" height="110" width="110">
+                      </div>
+                    {% endfor %}
+                {% endif %}
+                </div>
                     {% for feed in user2.feeds.all %}
                 <div class="card mt-2">
               <div class="card-body">

@@ -10,6 +10,7 @@ from .forms import EditProfileForm, LoginForm, RegisterForm
 from .mixins import PermissionMixin
 from community.models import Group
 from feed.forms import AddFeedForm
+from .models import PhotosUser
 
 #class BaseView(View):
 #
@@ -95,9 +96,14 @@ class ProfileView(PermissionMixin, View):
         context['form'] = form
         if request.user == SocialUser.objects.get(username=kwargs.get('slug')):
             context['user'] = request.user
+            last_5_photo = PhotosUser.objects.filter(user=request.user).order_by('-pk')[:5]
+            context['last_5_photo'] =last_5_photo
         else:
             context['user'] = ''
-            context['user2'] =  SocialUser.objects.get(username=kwargs.get('slug'))
+            user2 = SocialUser.objects.get(username=kwargs.get('slug'))
+            context['user2'] =  user2
+            last_5_photo = PhotosUser.objects.filter(user=user2).order_by('-pk')[:5]
+            context['last_5_photo'] = last_5_photo
         return render(request, 'profiles/myprofile.html', context)
 
     def post(self, request, *args, **kwargs):
