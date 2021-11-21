@@ -49,7 +49,7 @@
                 {% endif %}
                 </div>
                 <p>Что у вас нового?</p>
-                    <form class="form-control" method="post">
+                    <form class="form-control" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ form.media }}
                         {{ form.as_p }}

@@ -8,7 +8,7 @@ from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
 from feed.models import Feed
-
+from django_resized import ResizedImageField
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, username, password=None):
@@ -44,7 +44,7 @@ class MyUserManager(BaseUserManager):
 
 class PhotosUser(models.Model):
 
-    image = models.ImageField(verbose_name='Фотография')
+    image = ResizedImageField(verbose_name='Фотография')
     slug = models.SlugField()
 
     def save(self, *args, **kwargs):

@@ -107,10 +107,11 @@ class ProfileView(PermissionMixin, View):
         return render(request, 'profiles/myprofile.html', context)
 
     def post(self, request, *args, **kwargs):
-        form = AddFeedForm(request.POST or None)
+        form = AddFeedForm(request.POST or None, request.FILES)
         if form.is_valid():
             data = form.cleaned_data
             new_feed = Feed.objects.create(content=data['content'])
+            print(data)
             new_feed.save()
             request.user.feeds.add(new_feed)
             request.user.save()

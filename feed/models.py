@@ -1,6 +1,7 @@
 from django.db import models
 from ckeditor_uploader.fields import RichTextUploadingField
 
+
 class Comment(models.Model):
 
     author = models.ForeignKey('profiles.SocialUser', verbose_name='Автор комментария', on_delete=models.CASCADE,
@@ -17,6 +18,7 @@ class Comment(models.Model):
 class Feed(models.Model):
 
     content = RichTextUploadingField(blank=True, null=True, verbose_name='Контент', max_length=7000)
+    images = models.ManyToManyField('profiles.PhotosUser', verbose_name='Фотографии', blank=True)
     comments = models.ManyToManyField(Comment, verbose_name='Комментарии', related_name='feed')
     likes = models.IntegerField(default=0, verbose_name='Кол-во лайков')
     date_add = models.DateTimeField(auto_now_add=True)
