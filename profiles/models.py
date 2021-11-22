@@ -44,8 +44,8 @@ class MyUserManager(BaseUserManager):
 
 class PhotosUser(models.Model):
 
-    image = ResizedImageField(verbose_name='Фотография')
-    slug = models.SlugField()
+    image = models.ImageField(verbose_name='Фотография')
+    slug = models.SlugField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if self.image:

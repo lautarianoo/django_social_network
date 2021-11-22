@@ -11,6 +11,7 @@ from .mixins import PermissionMixin
 from community.models import Group
 from feed.forms import AddFeedForm
 from .models import PhotosUser
+import random
 
 #class BaseView(View):
 #
@@ -110,8 +111,16 @@ class ProfileView(PermissionMixin, View):
         form = AddFeedForm(request.POST or None, request.FILES)
         if form.is_valid():
             data = form.cleaned_data
+            print(request.FILES)
             new_feed = Feed.objects.create(content=data['content'])
-            print(data)
+            if request.FILES['images']:
+                for photo in request.FILES.getlist('images'):
+                    new_photo = PhotosUser.objects.create(image=photo)
+                    slug_photo = f"{request.user.username}_{new_photo.id}%{random.randint(1, 10)}_{random.randint(1, 99999999)}"
+                    new_photo.slug = slug_photo
+                    new_photo.save()
+                    request.user.photos.add(new_photo)
+                    new_feed.images.add(new_photo)
             new_feed.save()
             request.user.feeds.add(new_feed)
             request.user.save()

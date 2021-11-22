@@ -1,11 +1,10 @@
 from django import forms
 from .models import Feed
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
-from django_resized import ResizedImageField
+
 class AddFeedForm(forms.Form):
 
-    content = forms.CharField(label='', required=True, widget=forms.TextInput())
-    images = forms.ImageField(label='', required=False)
+    content = forms.CharField(label='', required=False, widget=forms.TextInput())
+    images = forms.ImageField(label='', required=False, widget=forms.FileInput(attrs={'multiple': 'multiple'}))
 
     def clean(self):
         data = self.cleaned_data['content']

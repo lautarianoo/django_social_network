@@ -60,7 +60,13 @@
                 <div class="card mt-2">
               <div class="card-body">
                 <h5 class="card-title"><img src="{{ user.avatar.url }}" alt="" height="50" width="50"> {{ user.first_name }} {{ user.last_name }}</h5>
-                <p class="card-text">{{ feed.content }}</p>
+                <p class="card-text">{{ feed.content }}
+                {% if feed.images.all %}
+                    {% for photo in feed.images.all %}
+                        <img src="{{ photo.image.url }}" alt="" class="img-fluid m-2">
+                    {% endfor %}
+                {% endif %}
+                </p>
                 <p>Комментарии</p>
               </div>
             </div>
