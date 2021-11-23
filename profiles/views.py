@@ -97,12 +97,14 @@ class ProfileView(PermissionMixin, View):
         context['form'] = form
         if request.user == SocialUser.objects.get(username=kwargs.get('slug')):
             context['user'] = request.user
+            context['feedss'] = Feed.objects.filter(user=request.user).order_by('-date_add')
             last_5_photo = PhotosUser.objects.filter(user=request.user).order_by('-pk')[:5]
             context['last_5_photo'] =last_5_photo
         else:
             context['user'] = ''
             user2 = SocialUser.objects.get(username=kwargs.get('slug'))
             context['user2'] =  user2
+            context['feedss'] = Feed.objects.filter(user=user2).order_by('-date_add')
             last_5_photo = PhotosUser.objects.filter(user=user2).order_by('-pk')[:5]
             context['last_5_photo'] = last_5_photo
         return render(request, 'profiles/myprofile.html', context)
@@ -125,6 +127,14 @@ class ProfileView(PermissionMixin, View):
             request.user.feeds.add(new_feed)
             request.user.save()
             return redirect('profile', slug=request.user.username)
+
+class DeleteFeedUser(View):
+
+    def get(self, request, *args, **kwargs):
+        feed = Feed.objects.get(id=kwargs.get('pk'))
+        request.user.feeds.remove(feed)
+        feed.delete()
+        return redirect('profile', slug=request.user.username)
 
 class EditProfile(PermissionMixin, View):
 

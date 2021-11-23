@@ -56,18 +56,34 @@
                         <button class="btn btn-light">Выложить новость</button>
                     </form>
                 <hr>
-                {% for feed in user.feeds.all %}
+                {% for feed in feedss %}
                 <div class="card mt-2">
               <div class="card-body">
-                <h5 class="card-title"><img src="{{ user.avatar.url }}" alt="" height="50" width="50"> {{ user.first_name }} {{ user.last_name }}</h5>
-                <p class="card-text">{{ feed.content }}
+              <div class="row">
+                <h5 class="card-title m-2"><img src="{{ user.avatar.url }}" alt="" height="50" width="50"> {{ user.first_name }} {{ user.last_name }}</h5>
+                <p class="card-text m-2">{{ feed.content }}
+                </p>
+              </div>
+              <div class="card-title m-2" style="position:absolute;top:2%;right:2%;">
+                                       <div class="flex-shrink-0 dropdown">
+          <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+          </a>
+          <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+            <li><a class="dropdown-item" href="{% url 'delete_feed' pk=feed.id %}">Удалить запись</a></li>
+            <li><a class="dropdown-item" href="#">Архивировать</a></li>
+            <li><a class="dropdown-item" href="">Выключить комментарии</a></li>
+          </ul>
+        </div>
+              </div>
                 {% if feed.images.all %}
                     {% for photo in feed.images.all %}
-                        <img src="{{ photo.image.url }}" alt="" class="img-fluid m-2">
+                        <img src="{{ photo.image.url }}" alt="" class="m-2" width="350" height="250">
                     {% endfor %}
                 {% endif %}
-                </p>
-                <p>Комментарии</p>
+              <div class="row">
+                <p class="m-2">Комментарии</p>
+                <p style="position:absolute;bottom:2%;left:70%;color: #8e908c">{{ feed.date_add }}</p>
+              </div>
               </div>
             </div>
                 {% endfor %}
@@ -125,21 +141,41 @@
                     </div>
                     <hr>
                     <div class="row m-2">
+                    {% if user2.photos.all %}
                 <a>Посмотреть все >></a>
-                {% if user2.photos %}
-                    {% for photo in last_5_photo %}
+                {% for photo in last_5_photo %}
                       <div class="col-2">
                         <img src="{{ photo.image.url }}" alt="" height="110" width="110">
                       </div>
                     {% endfor %}
                 {% endif %}
                 </div>
-                    {% for feed in user2.feeds.all %}
+                {% for feed in feedss %}
                 <div class="card mt-2">
               <div class="card-body">
-                <h5 class="card-title"><img src="{{ user2.avatar.url }}" alt="" height="50" width="50"> {{ user2.first_name }} {{ user2.last_name }}</h5>
-                <p class="card-text">{{ feed.content }}</p>
-                <p>Комментарии</p>
+              <div class="row">
+                <h5 class="card-title m-2"><img src="{{ user2.avatar.url }}" alt="" height="50" width="50"> {{ user2.first_name }} {{ user2.last_name }}</h5>
+                <p class="card-text m-2">{{ feed.content }}
+                </p>
+              </div>
+                  <div class="card-title m-2" style="position:absolute;top:2%;right:2%;">
+                                       <div class="flex-shrink-0 dropdown">
+          <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+          </a>
+          <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+            <li><a class="dropdown-item" href="#">Пожаловаться</a></li>
+          </ul>
+        </div>
+              </div>
+                {% if feed.images.all %}
+                    {% for photo in feed.images.all %}
+                        <img src="{{ photo.image.url }}" alt="" class="m-2" width="350" height="250">
+                    {% endfor %}
+                {% endif %}
+                <div class="row">
+                <p class="m-2">Комментарии</p>
+                <p style="position:absolute;bottom:2%;left:70%;color: #8e908c">{{ feed.date_add }}</p>
+              </div>
               </div>
             </div>
                 {% endfor %}
