@@ -43,7 +43,7 @@
                 <a>Посмотреть все >></a>
                     {% for photo in last_5_photo %}
                       <div class="col-2">
-                        <img src="{{ photo.image.url }}" alt="" height="110" width="110">
+                            <a href="{% url 'image' slug=user.username %}?p={{ photo.slug }}"><img src="{{ photo.image.url }}" alt="" height="110" width="120"></a>
                       </div>
                     {% endfor %}
                 {% endif %}
@@ -145,7 +145,7 @@
                 <a>Посмотреть все >></a>
                 {% for photo in last_5_photo %}
                       <div class="col-2">
-                        <img src="{{ photo.image.url }}" alt="" height="110" width="110">
+                          <a href="{% url 'image' slug='' %}"><img src="{{ photo.image.url }}" alt="" height="110" width="110"></a>
                       </div>
                     {% endfor %}
                 {% endif %}

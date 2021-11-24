@@ -217,3 +217,8 @@ class Unsubscribe(View):
         request.user.subscribers.subscribers.remove(subscriber)
         return redirect('profile', slug=kwargs.get('username'))
 
+class ImageView(View):
+
+    def get(self, request, *args, **kwargs):
+        image = PhotosUser.objects.get(slug=request.GET.get('p'))
+        return render(request, 'profiles/myprofile.html', {'image': image})

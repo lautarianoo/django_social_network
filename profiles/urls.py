@@ -18,5 +18,6 @@ urlpatterns = [
     path('delete-friend/<str:username>/', DeleteFriend.as_view(), name='delete-friend'),
     path('unsubscribe/<str:username>/', Unsubscribe.as_view(), name='unsubscribe'),
     path('search/', MainSearchView.as_view(), name='search'),
-    path('friends/search/', FriendSearchView.as_view(), name='search-friend')
+    path('friends/search/', FriendSearchView.as_view(), name='search-friend'),
+    path('profile/<str:slug>', ImageView.as_view(), name='image')
 ]
