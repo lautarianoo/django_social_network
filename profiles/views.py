@@ -221,4 +221,5 @@ class ImageView(View):
 
     def get(self, request, *args, **kwargs):
         image = PhotosUser.objects.get(slug=request.GET.get('p'))
-        return render(request, 'profiles/myprofile.html', {'image': image})
+        user = SocialUser.objects.get(username=kwargs.get('slug'))
+        return render(request, 'profiles/image.html', {'image': image, 'user': user})
