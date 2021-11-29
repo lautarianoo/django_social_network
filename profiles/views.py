@@ -16,7 +16,7 @@ import random
 #class BaseView(View):
 #
 #    def get(self, request, *args, **kwargs):
-#        return render(request, 'base.html', {})
+#        return render(request, 'base.html', {})#all'})
 
 class MainSearchView(View):
 
@@ -99,11 +99,15 @@ class ProfileView(PermissionMixin, View):
             context['user'] = request.user
             context['feedss'] = Feed.objects.filter(user=request.user).order_by('-date_add')
             last_5_photo = PhotosUser.objects.filter(user=request.user).order_by('-pk')[:5]
+            context['last_6_friends'] = SocialUser.objects.filter(friends=request.user).order_by('-pk')[:6]
+            context['last_5_groups'] = Group.objects.filter(followers=request.user)
             context['last_5_photo'] =last_5_photo
         else:
             context['user'] = ''
             user2 = SocialUser.objects.get(username=kwargs.get('slug'))
             context['user2'] =  user2
+            context['last_6_friends'] = SocialUser.objects.filter(friends=user2).order_by('-pk')[:6]
+            context['last_5_groups'] = Group.objects.filter(followers=request.user)
             context['feedss'] = Feed.objects.filter(user=user2).order_by('-date_add')
             last_5_photo = PhotosUser.objects.filter(user=user2).order_by('-pk')[:5]
             context['last_5_photo'] = last_5_photo

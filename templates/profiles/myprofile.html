@@ -8,8 +8,22 @@
                     <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'css/camera_200.png' %} {% endif %}" alt="" width="250" height="250">
                     <a class="btn btn-primary" href="{% url 'edit' %}" style="margin: 7%;">Редактировать профиль</a>
                 </div>
-
-            </div>
+                <hr>
+                <h5>Друзья</h5>
+                <div class="row">
+                        {% for friend in last_6_friends %}
+                            <div class="col-4">
+                                <img src="{% if friend.avatar %}{{ friend.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" width="50" height="50" class="p-1">
+                                <p>{{ friend.first_name }}</p>
+                            </div>
+                        {% endfor %}
+                        <hr>
+                        {% for group in last_5_groups %}
+                                <img src="{% if group.avatar %}{{ group.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" width="50" height="50" class="p-1">
+                                <p>{{ group.title }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
             <div class="col-9"  style="background-color: white; ">
                 <h4>{{ user.first_name }} {{ user.last_name }}</h4>
                 <p>{{ user.infouser.status }}</p>
