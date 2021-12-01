@@ -47,7 +47,7 @@ class Comments(models.Model):
 
     author = models.ForeignKey('SocialUser', verbose_name='Автор комментария', on_delete=models.CASCADE,
                                related_name='comments2')
-    parents = models.ManyToManyField('SocialUser', verbose_name='Родитель', related_name='comment2')
+    parents = models.ManyToManyField('self', verbose_name='Родитель', related_name='comment2')
     content = RichTextField(blank=True, null=True, verbose_name='Контент', max_length=1150)
     likes = models.IntegerField(verbose_name='Лайки комментария', default=0)
     date_add = models.DateTimeField(auto_now_add=True)

@@ -76,8 +76,7 @@
               <div class="card-body">
               <div class="row">
                 <h5 class="card-title m-2"><img src="{{ user.avatar.url }}" alt="" height="50" width="50"> {{ user.first_name }} {{ user.last_name }}</h5>
-                <p class="card-text m-2">{{ feed.content }}
-                </p>
+                  <a href="{% url 'feed' %}?w={{ feed.id }}" style="text-decoration: none; color: black;"><p class="card-text m-2">{{ feed.content }}</p></a>
               </div>
               <div class="card-title m-2" style="position:absolute;top:2%;right:2%;">
                                        <div class="flex-shrink-0 dropdown">
@@ -126,7 +125,21 @@
                         <a class="btn btn-primary text-center m-2" href="{% url 'subscribe' username=user2.username %}">Подписаться</a>
                     {% endif %}
                 </div>
-            </div>
+                <h5>Друзья</h5>
+                <div class="row">
+                        {% for friend in last_6_friends %}
+                            <div class="col-4">
+                                <img src="{% if friend.avatar %}{{ friend.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" width="50" height="50" class="p-1">
+                                <p>{{ friend.first_name }}</p>
+                            </div>
+                        {% endfor %}
+                        <hr>
+                        {% for group in last_5_groups %}
+                                <img src="{% if group.avatar %}{{ group.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" width="50" height="50" class="p-1">
+                                <p>{{ group.title }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
             <div class="col-9"  style="background-color: white; ">
                 <h4>{{ user2.first_name }} {{ user2.last_name }}</h4>
                 <p>{% if user2.infouser.status %}{{ user2.infouser.status }}{% endif %}</p>
