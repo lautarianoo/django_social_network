@@ -26,3 +26,4 @@ class AddComment(View):
             feed.comments.add(new_comment)
         return redirect('profile', slug=request.user.username)
 
+

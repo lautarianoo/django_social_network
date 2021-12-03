@@ -125,6 +125,7 @@
                         <a class="btn btn-primary text-center m-2" href="{% url 'subscribe' username=user2.username %}">Подписаться</a>
                     {% endif %}
                 </div>
+                <p style="color: #8e908c">{{ len_general_friends }} общих друзей</p>
                 <h5>Друзья</h5>
                 <div class="row">
                         {% for friend in last_6_friends %}

@@ -3,7 +3,7 @@
 {% block profile %}
     <div class="row"><h4 class="m-2"><a style="text-decoration: none;" class="actions" onclick="javascript:history.back(); return false;"><- Назад</a></h4></div>
     <div class="row">
-        {% if feed.images %}
+        {% if feed.images.all %}
             <div class="col-7">
                 {% for image in feed.images.all %}
                     <img src="{{ image.image.url }}" alt="" width="500" height="400">
@@ -36,6 +36,34 @@
                     </div>
                 {% endfor %}
 
+            </div>
+        {% else %}
+            <div class="col-7">
+                <h5 class="card-title m-2"><img src="{{ user.avatar.url }}" alt="" height="50" width="50"> {{ user.first_name }} {{ user.last_name }}</h5>
+                <p>{{ feed.content }}</p>
+                <hr>
+                <h3>Комментарии</h3>
+                <form action="{% url 'add-comment' pk=feed.id %}" method="post" class="mt-4"
+                          id="formReview">
+                        {% csrf_token %}
+                        <input type="hidden" name="parent" id="contactparent" value="">
+                        <h6>Ваш комментарий</h6>
+                        <div class="form-group">
+                            {{ form.content }}
+                        </div>
+                        <button type="submit"
+                                class="mt-2 mb-2 btn btn-success btn-block">
+                            Отправить
+                        </button>
+                    </form>
+                {% for comment in feed.comments.all %}
+                    <div class="card mt-2" style="width: 15rem;">
+                      <div class="card-body">
+                        <h5 class="card-title"><img src="{{ comment.author.avatar.url }}" alt="" height="30" width="30"> {{ comment.author.first_name }} {{ comment.author.last_name }}</h5>
+                        <p class="card-text">{{ comment.content }}</p>
+                      </div>
+                    </div>
+                {% endfor %}
             </div>
         {% endif %}
     </div>

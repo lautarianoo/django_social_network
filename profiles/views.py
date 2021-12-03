@@ -106,6 +106,11 @@ class ProfileView(PermissionMixin, View):
             context['user'] = ''
             user2 = SocialUser.objects.get(username=kwargs.get('slug'))
             context['user2'] =  user2
+            context['general_friends'] = []
+            for friend in user2.friends.all():
+                if friend in request.user.friends.all():
+                    context['general_friends'].append(friend)
+            context['len_general_friends'] = len(context['general_friends'])
             context['last_6_friends'] = SocialUser.objects.filter(friends=user2).order_by('-pk')[:6]
             context['last_5_groups'] = Group.objects.filter(followers=user2)
             context['feedss'] = Feed.objects.filter(user=user2).order_by('-date_add')
@@ -173,7 +178,19 @@ class EditProfile(PermissionMixin, View):
 class FriendsView(PermissionMixin, View):
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'profiles/friends.html', {'users': request.user.friends.all()})
+        context = {}
+        context['users'] = request.user.friends.all()
+        if 'act' in request.GET.keys():
+            possible_friends = set()
+            for friend in request.user.friends.all():
+                for genfriend in friend.friends.all():
+                    if genfriend not in request.user.friends.all() and genfriend != request.user:
+                        possible_friends.add(genfriend)
+            context['possible_friends'] = possible_friends
+            print(context['possible_friends'])
+        else:
+            context['possible_friends'] = ''
+        return render(request, 'profiles/friends.html', context)
 
 class FollowersView(PermissionMixin, View):
 

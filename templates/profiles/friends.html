@@ -2,6 +2,7 @@
 {% load static %}
 {% block profile %}
     <div class="row">
+        {% if not possible_friends %}
         <div class="col-6">
         <form action="{% url 'search-friend' %}" class="w-100 me-3" method="get">
           <input type="search" class="form-control" placeholder="Поиск" aria-label="Search" name="q">
@@ -26,9 +27,27 @@
         {% endblock search %}
 
         </div>
+        {% else %}
+            <div class="col-6">
+                <div class="row">
+                    <h2>Возможные друзья</h2>
+                    <hr>
+                    {% for friend in possible_friends %}
+                        <div class="col-4 mt-2">
+                            <a href="{% url 'profile' slug=friend.username %}">
+                            <img src="{% if friend.avatar %}{{ friend.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" width="100" height="100" alt=".">
+                            <p>{{ friend.first_name }} {{ friend.last_name }}</p>
+                            </a>
+                        </div>
+
+                    {% endfor %}
+            </div>
+                </div>
+        {% endif %}
     <div class="col-4">
         <a class="btn btn-success" href="{% url 'followers' %}">Заявки в друзья</a>
         <p class="mt-2"><a class="btn btn-success" href="{% url 'subscribers' %}">Подписки</a></p>
+        <a class="btn-success btn" href="{% url 'friends' %}?act=find">Возможные друзья</a>
     </div>
     </div>
 {% endblock profile %}
