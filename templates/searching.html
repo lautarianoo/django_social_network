@@ -4,8 +4,9 @@
 {% block profile %}
     <div class="row">
         <div class="col-8">
+        {% if get_all or get_all2 %}
         <h4>Люди</h4>
-        {% if users %}
+        {% if first_5_users %}
         <p><a href="#">Посмотреть всё ></a></p>
             {% for user in first_5_users %}
                 {% if user != request.user %}
@@ -30,7 +31,7 @@
         {% endif %}
         <hr>
         <h4>Сообщества</h4>
-        {% if communities %}
+        {% if first_5_group %}
             <p><a href="#">Посмотреть всё >>></a></p>
             {% for group in first_5_group %}
                 <div class="card mb-3" style="max-width: 540px;">
@@ -51,11 +52,14 @@
         {% else %}
             <p>Не найдено</p>
         {% endif %}
+        {% elif users %}
+
+        {% endif %}
         </div>
         <div class="col-3">
-            <p><a class="btn btn-light" href="">Все</a></p>
-            <p><a class="btn btn-light">Люди</a></p>
-            <p><a class="btn btn-light">Сообщества</a></p>
+            <p><a class="btn btn-light" href="{% url 'search' %}?q={{ get_name }}&section=all">Все</a></p>
+            <p><a class="btn btn-light" href="{% url 'search' %}?q={{ get_name }}&section=people">Люди</a></p>
+            <p><a class="btn btn-light" href="{% url 'search' %}?q={{ get_name }}&section=community">Сообщества</a></p>
         </div>
     </div>
 {% endblock profile %}

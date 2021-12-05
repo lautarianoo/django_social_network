@@ -21,12 +21,25 @@ import random
 class MainSearchView(View):
 
     def get(self, request, *args, **kwargs):
+        context = {}
+        context['get_name'] = request.GET.get('q')
         users = SocialUser.objects.filter(full_name__icontains=request.GET.get('q'))
         community = Group.objects.filter(title__icontains=request.GET.get('q'))
         first_5_users = [users[user] for user in range(len(users)) if user <= 5]
+        context['first_5_users'] = first_5_users
         first_5_group = [community[group] for group in range(len(community)) if group <= 5]
-        return render(request, 'searching.html', {'users': users, 'communities': community, 'first_5_users': first_5_users,
-                                                  'first_5_group': first_5_group})
+        context['first_5_group'] = first_5_group
+        context['users'] = ''
+        context['communities'] = ''
+        if 'section' in request.GET.keys() and request.GET.get('section') == 'all':
+            context['get_all'] = '1'
+        elif 'section' in request.GET.keys() and request.GET.get('section') == 'people':
+            context['users'] = users
+        elif 'section' in request.GET.keys() and request.GET.get('section') == 'community':
+            context['communities'] = community
+        else:
+            context['get_all2'] = '1'
+        return render(request, 'searching.html', context)
 
 class FriendSearchView(View):
 

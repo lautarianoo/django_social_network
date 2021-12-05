@@ -9,7 +9,6 @@ from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
 from feed.models import Feed
-from django_resized import ResizedImageField
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, username, password=None):
