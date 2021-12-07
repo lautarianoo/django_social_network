@@ -1,0 +1,43 @@
+{% extends 'community/groups.html' %}
+{% load static %}
+{% block group-search %}
+    {% if follow_group %}
+        {% for group in follow_group %}
+             <div class="card mb-3 mt-4" style="max-width: 540px;">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="{% if group.avatar %}{{ group.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" class="img-fluid rounded-start" alt="...">
+                            </div>
+                         <div class="col-md-8">
+                           <div class="card-body">
+                               <h5 class="card-title"><a href="#">{{ group.title }}</a></h5>
+                             <p class="card-text">{{ group.infogroup.status }}. {{ group.infogroup.privaty }}</p>
+                             <p class="card-text"><a href="#">Отписаться</a></p>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+        {% endfor %}
+    {% endif %}
+    <hr>
+    {% if groups %}
+        {% for group in groups %}
+            {% if group not in follow_group %}
+             <div class="card mb-3 mt-4" style="max-width: 540px;">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="{% if group.avatar %}{{ group.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" class="img-fluid rounded-start" alt="...">
+                            </div>
+                         <div class="col-md-8">
+                           <div class="card-body">
+                               <h5 class="card-title"><a href="#">{{ group.title }}</a></h5>
+                             <p class="card-text">{{ group.infogroup.status }}. {{ group.infogroup.privaty }}</p>
+                             <p class="card-text"><a href="#">Подписаться</a></p>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock group-search %}

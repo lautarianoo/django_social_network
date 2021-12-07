@@ -53,7 +53,42 @@
             <p>Не найдено</p>
         {% endif %}
         {% elif users %}
-
+            <h2>Люди</h2>
+            {% for user in users %}
+                {% if user != request.user %}
+                 <div class="card mb-3" style="max-width: 540px;">
+                  <div class="row g-0">
+                    <div class="col-md-4">
+                      <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                          <h5 class="card-title"><a href="{% url 'profile' slug=user.username %}">{{ user.first_name }} {{ user.last_name }}</a></h5>
+                        <p class="card-text">{{ user.infouser.work }}</p>
+                        <p class="card-text"><a href="#">Написать сообщение</a></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+         {% elif communities %}
+            {% for group in communities %}
+                <div class="card mb-3" style="max-width: 540px;">
+                  <div class="row g-0">
+                    <div class="col-md-4">
+                      <img src="{% if group.avatar %}{{ group.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                          <h5 class="card-title"><a href="#">{{ group.title }}</a></h5>
+                        <p class="card-text">{{ group.thematic }}</p>
+                        <p class="card-text"><a href="#">Подписаться</a></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            {% endfor %}
         {% endif %}
         </div>
         <div class="col-3">

@@ -23,16 +23,14 @@ class CategoryGroup(models.Model):
 class InfoGroup(models.Model):
 
     PRIVATY_STATUS = (
-        ('Открытая', 'open'),
-        ('Закрытая', 'privat')
+        ('Открытая группа', 'open'),
+        ('Закрытая группа', 'privat')
     )
 
     status = models.CharField(max_length=250, verbose_name='Статус группы')
     privaty = models.CharField(verbose_name='Приватность', max_length=30, choices=PRIVATY_STATUS)
     description = models.CharField(verbose_name='Описание', max_length=1200)
-
-    def __str__(self):
-        return self.id
+    contacts = models.ManyToManyField('profiles.SocialUser', verbose_name='Контакты', related_name='infogroup')
 
     class Meta:
         verbose_name = 'Информация о группе'
@@ -41,12 +39,12 @@ class InfoGroup(models.Model):
 class Group(models.Model):
 
     THEMATICS = (
-        ('Образование', 'edu'),
-        ('Техника', 'tech'),
-        ('Авто/Мото', 'auto'),
-        ('Услуги', 'service'),
-        ('Блог', 'blog'),
-        ('Другое', 'other')
+        ('edu', 'Образование'),
+        ('tech', 'Техника'),
+        ('auto', 'Авто/Мото'),
+        ('service', 'Услуги'),
+        ('blog', 'Блог'),
+        ('other', 'Другое')
     )
     category = models.ForeignKey(CategoryGroup, verbose_name='Категория группы', on_delete=models.SET_NULL, null=True,
                                  related_name='groups')
@@ -76,7 +74,7 @@ class Group(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.title} | {self.author.username}"
+        return f"{self.title}"
 
     class Meta:
         verbose_name = 'Группа'

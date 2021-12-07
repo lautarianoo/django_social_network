@@ -1,0 +1,46 @@
+{% extends 'base_for_templates.html' %}
+{% load static %}
+{% block profile %}
+    <div class="row">
+        <div class="col-7">
+            <div class="row">
+                <div class="col-6">
+                    <h5 class="m-2"><a>Все сообщества {{ groups.count }}</a></h5>
+                </div>
+                <div class="col-6">
+                    <h5 class="m-2"><a>Управление {{ request.user.groups.count}}</a></h5>
+                </div>
+            </div>
+            <form action="{% url 'search-groups' %}" class="w-100 me-3" method="get">
+              <input type="search" class="form-control" placeholder="Поиск" aria-label="Search" name="tit">
+            </form>
+            {% block group-search %}
+            {% if groups %}
+                {% for group in groups %}
+                    <div class="card mb-3 mt-4" style="max-width: 540px;">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="{% if group.avatar %}{{ group.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" class="img-fluid rounded-start" alt="...">
+                            </div>
+                         <div class="col-md-8">
+                           <div class="card-body">
+                               <h5 class="card-title"><a href="#">{{ group.title }}</a></h5>
+                             <p class="card-text">{{ group.infogroup.status }}. {{ group.infogroup.privaty }}</p>
+                             <p class="card-text"><a href="#">Подписаться</a></p>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                {% endfor %}
+            {% else %}
+                <h4>Вы не подписаны ни на один паблик</h4>
+            {% endif %}
+            {% endblock group-search %}
+        </div>
+        <div class="col-2">
+            <a class="btn btn-light" href="{% url 'groups' %}">Сообщества</a>
+            <a class="btn btn-light mt-2" href="#">Мои сообщества</a>
+            <a class="btn btn-light mt-2" href="#">Мероприятия</a>
+        </div>
+    </div>
+{% endblock profile %}

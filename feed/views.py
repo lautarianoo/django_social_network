@@ -25,5 +25,3 @@ class AddComment(View):
             feed = Feed.objects.get(id=kwargs.get('pk'))
             feed.comments.add(new_comment)
         return redirect('profile', slug=request.user.username)
-
-

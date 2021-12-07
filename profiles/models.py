@@ -142,6 +142,7 @@ class SocialUser(AbstractBaseUser):
     def __str__(self):
         return f"{self.first_name} | {self.last_name}"
 
+
     def save(self, *args, **kwargs):
         #
         if self.avatar:
@@ -159,6 +160,7 @@ class SocialUser(AbstractBaseUser):
         if not self.full_name:
             self.full_name = f'{self.first_name} {self.last_name}'
         super().save(*args, **kwargs)
+
 
     class Meta:
         verbose_name = 'Профиль пользователя'
