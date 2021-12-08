@@ -18,8 +18,10 @@
                         {% endfor %}
                         <hr>
                         {% for group in last_5_groups %}
+                            <div class="col-4">
                                 <img src="{% if group.avatar %}{{ group.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" width="50" height="50" class="p-1">
                                 <p>{{ group.title }}</p>
+                            </div>
                         {% endfor %}
                     </div>
                 </div>
@@ -54,7 +56,7 @@
                 <hr>
                 <div class="row m-2">
                 {% if user.photos.all %}
-                <a>Посмотреть все >></a>
+                <h4>Фотографии {{ user.photos.count }}</h4>
                     {% for photo in last_5_photo %}
                       <div class="col-2">
                             <a href="{% url 'image' slug=user.username %}?p={{ photo.slug }}"><img src="{{ photo.image.url }}" alt="" height="110" width="120"></a>
@@ -170,7 +172,7 @@
                     <hr>
                     <div class="row m-2">
                     {% if user2.photos.all %}
-                <a>Посмотреть все >></a>
+               <h4>Фотографии {{ user2.photos.count }}</h4>
                 {% for photo in last_5_photo %}
                       <div class="col-2">
                           <a href="{% url 'image' slug=user2.username %}?p={{ photo.slug }}"><img src="{{ photo.image.url }}" alt="" height="110" width="110"></a>

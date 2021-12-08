@@ -19,19 +19,3 @@ urlpatterns = [
     path('friends/search/', FriendSearchView.as_view(), name='search-friend'),
     path('profile/<str:slug>', ImageView.as_view(), name='image'),
 ]
-
-#x, y = int(input()), int(input())
-#sign = input()
-#if sign in '+-*/':
-#    if sign == '+':
-#        print(x+y)
-#    if sign == '-':
-#        print(x-y)
-#    if sign == '*':
-#        print(x*y)
-#    if sign == '/' and y!=0:
-#        print(x/y)
-#    else:
-#        print('На ноль делить нельзя')
-#else:
-#    print('Неверная операция')

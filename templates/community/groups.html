@@ -5,7 +5,7 @@
         <div class="col-7">
             <div class="row">
                 <div class="col-6">
-                    <h5 class="m-2"><a>Все сообщества {{ groups.count }}</a></h5>
+                    <h5 class="m-2"><a style="text-decoration: none;" href="{% url 'groups' %}">Все сообщества {{ groups.count }}</a></h5>
                 </div>
                 <div class="col-6">
                     <h5 class="m-2"><a>Управление {{ request.user.groups.count}}</a></h5>
@@ -24,8 +24,9 @@
                             </div>
                          <div class="col-md-8">
                            <div class="card-body">
-                               <h5 class="card-title"><a href="#">{{ group.title }}</a></h5>
-                             <p class="card-text">{{ group.infogroup.status }}. {{ group.infogroup.privaty }}</p>
+                               <h5 class="card-title"><a href="{% url 'group' slug=group.slug %}">{{ group.title }}</a></h5>
+                             <p class="card-text">{{ group.infogroup.status }}</p>
+                             <p class="card-text">{{ group.infogroup.privaty }}</p>
                              <p class="card-text"><a href="#">Подписаться</a></p>
                            </div>
                          </div>

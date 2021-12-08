@@ -22,14 +22,9 @@ class CategoryGroup(models.Model):
 
 class InfoGroup(models.Model):
 
-    PRIVATY_STATUS = (
-        ('Открытая группа', 'open'),
-        ('Закрытая группа', 'privat')
-    )
-
     status = models.CharField(max_length=250, verbose_name='Статус группы')
-    privaty = models.CharField(verbose_name='Приватность', max_length=30, choices=PRIVATY_STATUS)
-    description = models.CharField(verbose_name='Описание', max_length=1200)
+    privaty = models.BooleanField(verbose_name='Закрытая группа', default=False)
+    description = models.TextField(verbose_name='Описание', max_length=1200)
     contacts = models.ManyToManyField('profiles.SocialUser', verbose_name='Контакты', related_name='infogroup')
 
     class Meta:
@@ -51,11 +46,13 @@ class Group(models.Model):
     title = models.CharField(max_length=120, verbose_name='Название группы')
     thematic = models.CharField(verbose_name='Тематика группы', max_length=100, choices=THEMATICS)
     website = models.CharField(verbose_name='Сайт сообщества', max_length=200)
+    photos = models.ManyToManyField('profiles.PhotosUser', verbose_name='Фотографии', related_name='group')
     author = models.ForeignKey(User, verbose_name='Автор группы', on_delete=models.SET_NULL, null=True, related_name='groupss')
     feeds = models.ManyToManyField(Feed, verbose_name='Лента новостей', related_name='group')
     followers = models.ManyToManyField(User, verbose_name='Подписчики', related_name='group')
     infogroup = models.ForeignKey(InfoGroup, verbose_name='Информация', related_name='groups', on_delete=models.SET_NULL, null=True)
     avatar = models.ImageField(verbose_name='Аватар группы')
+    slug = models.CharField(max_length=120, verbose_name='Слаг', blank=True)
 
     def save(self, *args, **kwargs):
         #
