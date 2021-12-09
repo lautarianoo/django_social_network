@@ -135,7 +135,6 @@ class ProfileView(PermissionMixin, View):
         form = AddFeedForm(request.POST or None, request.FILES)
         if form.is_valid():
             data = form.cleaned_data
-            print(request.FILES)
             new_feed = Feed.objects.create(content=data['content'])
             if request.FILES['images']:
                 for photo in request.FILES.getlist('images'):

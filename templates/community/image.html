@@ -1,0 +1,15 @@
+{% extends 'base_for_templates.html' %}
+
+{% block profile %}
+    <div class="row"><h4 class="m-2"><a style="text-decoration: none;" class="actions" onclick="javascript:history.back(); return false;"><- Назад</a></h4></div>
+    <div class="row">
+        <div class="col-9">
+            <img src="{{ photo.image.url }}" alt="" width="800" height="600">
+        </div>
+        <div class="col-3">
+            <h5 class="card-title m-2"><img src="{{ group.avatar.url }}" alt="" height="50" width="50"> {{ group.title }}</h5>
+            <h3>Комментарии</h3>
+            <hr>
+        </div>
+    </div>
+{% endblock profile %}

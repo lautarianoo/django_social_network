@@ -10,7 +10,9 @@
                 {% endfor %}
             </div>
             <div class="col-4">
-                <h5 class="card-title m-2"><img src="{{ user.avatar.url }}" alt="" height="50" width="50"> {{ user.first_name }} {{ user.last_name }}</h5>
+                {% if feed.group %}
+                <h5 class="card-title m-2"><img src="{{ group.avatar.url }}" alt="" height="50" width="50"> {{ group.title }}</h5>
+                {% endif %}
                 <p>{{ feed.content }}</p>
                 <hr>
                 <h3>Комментарии</h3>

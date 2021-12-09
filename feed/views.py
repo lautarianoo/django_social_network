@@ -3,14 +3,16 @@ from django.views import View
 from profiles.models import SocialUser
 from feed.models import Feed
 from feed.forms import CommentForm
+from community.models import Group
 
 class FeedView(View):
 
     def get(self, request, *args, **kwargs):
         feed = Feed.objects.get(id=request.GET.get('w'))
+        group = Group.objects.filter(slug=request.GET.get('sect')).first()
         form = CommentForm()
         request.session['feed_pk'] = feed.id
-        return render(request, 'feed/feed.html', {'feed': feed, 'form': form})
+        return render(request, 'feed/feed.html', {'feed': feed, 'form': form, 'group': group})
 
 class AddComment(View):
 
