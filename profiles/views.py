@@ -136,7 +136,7 @@ class ProfileView(PermissionMixin, View):
         if form.is_valid():
             data = form.cleaned_data
             new_feed = Feed.objects.create(content=data['content'])
-            if request.FILES['images']:
+            if request.FILES:
                 for photo in request.FILES.getlist('images'):
                     new_photo = PhotosUser.objects.create(image=photo)
                     slug_photo = f"{request.user.username}_{new_photo.id}%{random.randint(1, 10)}_{random.randint(1, 99999999)}"

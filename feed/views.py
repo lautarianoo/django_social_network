@@ -9,10 +9,11 @@ class FeedView(View):
 
     def get(self, request, *args, **kwargs):
         feed = Feed.objects.get(id=request.GET.get('w'))
-        group = Group.objects.filter(slug=request.GET.get('sect')).first()
+        group = Group.objects.filter(feeds=feed).first()
+        user = SocialUser.objects.filter(feeds=feed).first()
         form = CommentForm()
         request.session['feed_pk'] = feed.id
-        return render(request, 'feed/feed.html', {'feed': feed, 'form': form, 'group': group})
+        return render(request, 'feed/feed.html', {'feed': feed, 'form': form, 'group': group, 'user': user})
 
 class AddComment(View):
 

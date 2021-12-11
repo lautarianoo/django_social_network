@@ -48,6 +48,15 @@ class GroupView(View):
             group.save()
             return redirect('group', slug=kwargs.get('slug'))
 
+class DeleteFeedGroup(View):
+
+    def get(self, request, *args, **kwargs):
+        feed = Feed.objects.get(id=kwargs.get('pk'))
+        group = Group.objects.get(feeds=feed)
+        group.feeds.remove(feed)
+        feed.delete()
+        return redirect('group', slug=group.slug)
+
 class FollowGroupView(View):
 
     def get(self, request, *args, **kwargs):

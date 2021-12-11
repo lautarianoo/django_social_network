@@ -73,14 +73,14 @@
               <div class="card-body">
               <div class="row">
                 <h5 class="card-title m-2"><img src="{{ group.avatar.url }}" alt="" height="50" width="50"> {{ group.title }}</h5>
-                  <a href="{% url 'feed' %}?w={{ feed.id }}&sect={{ group.slug }}" style="text-decoration: none; color: black;"><p class="card-text m-2">{{ feed.content }}</p></a>
+                  <a href="{% url 'feed' %}?w={{ feed.id }}" style="text-decoration: none; color: black;"><p class="card-text m-2">{{ feed.content }}</p></a>
               </div>
               <div class="card-title m-2" style="position:absolute;top:2%;right:2%;">
                                        <div class="flex-shrink-0 dropdown">
           <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
           </a>
           <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-            <li><a class="dropdown-item" href="{% url 'delete_feed' pk=feed.id %}">Удалить запись</a></li>
+            <li><a class="dropdown-item" href="{% url 'delete-feed-group' pk=feed.id %}">Удалить запись</a></li>
             <li><a class="dropdown-item" href="#">Архивировать</a></li>
             <li><a class="dropdown-item" href="">Выключить комментарии</a></li>
           </ul>

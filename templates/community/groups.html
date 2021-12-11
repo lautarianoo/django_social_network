@@ -26,7 +26,7 @@
                            <div class="card-body">
                                <h5 class="card-title"><a href="{% url 'group' slug=group.slug %}">{{ group.title }}</a></h5>
                              <p class="card-text">{{ group.infogroup.status }}</p>
-                             <p class="card-text">{{ group.infogroup.privaty }}</p>
+                             <p class="card-text">{% if not group.infogroup.privaty %}Открытая{% else %}Закрытая{% endif %}</p>
                              <p class="card-text"><a href="#">Подписаться</a></p>
                            </div>
                          </div>

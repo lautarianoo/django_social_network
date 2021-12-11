@@ -10,8 +10,10 @@
                 {% endfor %}
             </div>
             <div class="col-4">
-                {% if feed.group %}
-                <h5 class="card-title m-2"><img src="{{ group.avatar.url }}" alt="" height="50" width="50"> {{ group.title }}</h5>
+                {% if group %}
+                    <h5 class="card-title m-2"><img src="{{ group.avatar.url }}" alt="" height="50" width="50"> {{ group.title }}</h5>
+                {% else %}
+                    <h5 class="card-title m-2"><img src="{{ user.avatar.url }}" alt="" height="50" width="50"> {{ user.first_name }} {{ user.last_name }}</h5>
                 {% endif %}
                 <p>{{ feed.content }}</p>
                 <hr>
@@ -29,19 +31,25 @@
                             Отправить
                         </button>
                     </form>
-                {% for comment in feed.comments.all %}
-                    <div class="card mt-2" style="width: 15rem;">
-                      <div class="card-body">
-                        <h5 class="card-title"><img src="{{ comment.author.avatar.url }}" alt="" height="30" width="30"> {{ comment.author.first_name }} {{ comment.author.last_name }}</h5>
-                        <p class="card-text">{{ comment.content }}</p>
-                      </div>
-                    </div>
-                {% endfor %}
+                {% if feed.comments.all %}
+                    {% for comment in feed.comments.all %}
+                        <div class="card mt-2" style="width: 15rem;">
+                          <div class="card-body">
+                            <h5 class="card-title"><img src="{{ comment.author.avatar.url }}" alt="" height="30" width="30"> {{ comment.author.first_name }} {{ comment.author.last_name }}</h5>
+                            <p class="card-text">{{ comment.content }}</p>
+                          </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
 
             </div>
         {% else %}
             <div class="col-7">
-                <h5 class="card-title m-2"><img src="{{ user.avatar.url }}" alt="" height="50" width="50"> {{ user.first_name }} {{ user.last_name }}</h5>
+                {% if group %}
+                    <h5 class="card-title m-2"><img src="{{ group.avatar.url }}" alt="" height="50" width="50"> {{ group.title }}</h5>
+                {% else %}
+                    <h5 class="card-title m-2"><img src="{{ user.avatar.url }}" alt="" height="50" width="50"> {{ user.first_name }} {{ user.last_name }}</h5>
+                {% endif %}
                 <p>{{ feed.content }}</p>
                 <hr>
                 <h3>Комментарии</h3>
@@ -58,6 +66,7 @@
                             Отправить
                         </button>
                     </form>
+                {% if feed.comments.all %}
                 {% for comment in feed.comments.all %}
                     <div class="card mt-2" style="width: 15rem;">
                       <div class="card-body">
@@ -66,6 +75,7 @@
                       </div>
                     </div>
                 {% endfor %}
+                 {% endif %}
             </div>
         {% endif %}
     </div>
