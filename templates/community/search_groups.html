@@ -10,7 +10,7 @@
                             </div>
                          <div class="col-md-8">
                            <div class="card-body">
-                               <h5 class="card-title"><a href="#">{{ group.title }}</a></h5>
+                               <h5 class="card-title"><a href="{% url 'group' slug=group.slug %}">{{ group.title }}</a></h5>
                              <p class="card-text">{{ group.infogroup.status }}. {{ group.infogroup.privaty }}</p>
                              <p class="card-text"><a href="#">Отписаться</a></p>
                            </div>
@@ -30,7 +30,7 @@
                             </div>
                          <div class="col-md-8">
                            <div class="card-body">
-                               <h5 class="card-title"><a href="#">{{ group.title }}</a></h5>
+                               <h5 class="card-title"><a href="{% url 'group' slug=group.slug %}">{{ group.title }}</a></h5>
                              <p class="card-text">{{ group.infogroup.status }}. {{ group.infogroup.privaty }}</p>
                              <p class="card-text"><a href="#">Подписаться</a></p>
                            </div>

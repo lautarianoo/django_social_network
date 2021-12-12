@@ -15,9 +15,14 @@ class GroupsView(View):
 class SearchGroup(View):
 
     def get(self, request, *args, **kwargs):
-        follow_group = Group.objects.filter(title__icontains=request.GET.get('tit'))
+        follow_group = Group.objects.filter(title__icontains=request.GET.get('tit'), followers=request.user)
         groups = Group.objects.filter(title__icontains=request.GET.get('tit'))
         return render(request, 'community/search_groups.html', {'follow_group': follow_group, 'groups': groups})
+
+class EditGroupView(View):
+
+    def get(self, request, *args, **kwargs):
+        pass
 
 class GroupView(View):
 
@@ -61,7 +66,10 @@ class FollowGroupView(View):
 
     def get(self, request, *args, **kwargs):
         group = Group.objects.get(slug=kwargs.get('slug'))
-        group.followers.add(request.user)
+        if group.infogroup.privaty:
+            group.applications.add(request.user)
+        else:
+            group.followers.add(request.user)
         group.save()
         return redirect('group', slug=kwargs.get('slug'))
 
@@ -69,7 +77,10 @@ class UnfollowGroup(View):
 
     def get(self, request, *args, **kwargs):
         group = Group.objects.get(slug=kwargs.get('slug'))
-        group.followers.remove(request.user)
+        if group.infogroup.privaty and request.user not in group.followers.all():
+            group.applications.remove(request.user)
+        else:
+            group.followers.remove(request.user)
         group.save()
         return redirect('group', slug=kwargs.get('slug'))
 
