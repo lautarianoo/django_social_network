@@ -133,7 +133,7 @@
                 <a class="btn btn-primary mt-2" href="{% url 'follow-group' slug=group.slug %}">Вступить в группу</a>
             {% endif %}
             <hr>
-            <a class="btn btn-light" href="#">Управление</a>
+            <a class="btn btn-light" href="{% url 'edit' slug=group.slug %}">Управление</a>
             <a class="btn btn-light" href="#">Статистика</a>
             <a class="btn btn-light" href="#">Комментарии</a>
             <a class="btn btn-light" href="#">События</a>

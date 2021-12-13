@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Group
+from .models import Group, InfoGroup
 from profiles.models import PhotosUser
 from feed.forms import AddFeedForm
 from feed.models import Feed
 import random
+from .forms import EditGroupForm
 
 class GroupsView(View):
 
@@ -22,7 +23,31 @@ class SearchGroup(View):
 class EditGroupView(View):
 
     def get(self, request, *args, **kwargs):
-        pass
+        group = Group.objects.get(slug=kwargs.get('slug'))
+        form = EditGroupForm(initial={'status': group.infogroup.status, 'privaty': group.infogroup.privaty, 'description': group.infogroup.description,
+                                      'website': group.infogroup.website, 'category': group.category, 'thematic': group.thematic, 'title': group.title, 'avatar': group.avatar,
+                                      'slug': group.slug})
+        return render(request, 'community/edit.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = EditGroupForm(request.POST, request.FILES or None)
+        if form.is_valid():
+            data = form.cleaned_data
+            group = Group.objects.get(slug=kwargs.get('slug'))
+            group.infogroup.privaty = data['privaty']
+            group.infogroup.description = data['description']
+            group.infogroup.status = data['status']
+            group.infogroup.website = data['website']
+            group.infogroup.save()
+            group.category = data['category']
+            group.thematic = data['thematic']
+            group.title = data['title']
+            if data['avatar']:
+                group.avatar = data['avatar']
+            group.slug = data['slug']
+            group.save()
+            return redirect('group', slug=kwargs.get('slug'))
+        return render(request, 'community/edit.html', {'form': form})
 
 class GroupView(View):
 
