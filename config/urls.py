@@ -24,7 +24,8 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', include('profiles.urls')),
     path('feed/', include('feed.urls')),
-    path('groups/', include('community.urls'))
+    path('groups/', include('community.urls')),
+    path('mes', include('messenger.urls'))
 ]
 
 if settings.DEBUG:
