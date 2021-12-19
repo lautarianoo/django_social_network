@@ -7,7 +7,7 @@
             <ul class="list-group">
                 <li class="list-group-item mb-2" ><a href="{% url 'profile' slug=request.user.username %}" style="text-decoration: none;">Моя страница</a></li>
                 <li class="list-group-item mb-2" ><a href="#" style="text-decoration: none;">Новости</a></li>
-                <li class="list-group-item mb-2" ><a href="#" style="text-decoration: none;">Сообщения</a></li>
+                <li class="list-group-item mb-2" ><a href="{% url 'messages' %}" style="text-decoration: none;">Сообщения</a></li>
                 <li class="list-group-item mb-2" ><a href="{% url 'friends' %}" style="text-decoration: none;">Друзья</a></li>
                 <li class="list-group-item mb-2" ><a href="{% url 'groups' %}" style="text-decoration: none;">Сообщества</a></li>
                 <li class="list-group-item" ><a href="#" style="text-decoration: none;">Видео</a></li>
