@@ -25,7 +25,7 @@ urlpatterns = [
     path('', include('profiles.urls')),
     path('feed/', include('feed.urls')),
     path('groups/', include('community.urls')),
-    path('mes', include('messenger.urls'))
+    path('mes/', include('messenger.urls'))
 ]
 
 if settings.DEBUG:
