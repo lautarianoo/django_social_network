@@ -14,7 +14,7 @@ class Room(models.Model):
     title = models.CharField(max_length=150, verbose_name='Название', blank=True, null=True)
     avatar = models.ImageField(verbose_name='Аватар беседы', blank=True, null=True)
     conference = models.BooleanField(verbose_name='Конференция', default=False)
-    slug = models.SlugField(verbose_name='Технический слаг', unique=True)
+    slug = models.SlugField(verbose_name='Технический слаг', unique=True, blank=True, null=True)
 
     def __str__(self):
        return f"{self.id} | {self.title}"
@@ -28,6 +28,8 @@ class Room(models.Model):
         super().save(*args, **kwargs)
 
     def last_message(self):
+       if not self.messages_room.all():
+        return False
        return self.messages_room.last()
 
     def noread_messages(self):

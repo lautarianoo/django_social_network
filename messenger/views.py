@@ -16,7 +16,7 @@ class RoomView(View):
             room = Room.objects.get(slug=request.GET.get('sell'))
             context['room'] = room
         else:
-            room = Room.objects.get(slug=request.GET.get('sell'))
+            room = Room.objects.get(id=request.GET.get('sell'))
             context['room'] = room
         room.messages_room.filter(read=False).exclude(author=request.user).update(read=True)
         return render(request, 'messenger/room.html', context)
@@ -25,6 +25,6 @@ class RoomView(View):
         pass
 
     def dispatch(self, request, *args, **kwargs):
-        if not Room.objects.filter(slug=request.GET.get('sell'), members=request.user).exists() or not Room.objects.filter(id=request.GET.get('sell'), members=request.user).exists():
+        if not Room.objects.filter(slug=request.GET.get('sell'), members=request.user).exists() and not Room.objects.filter(id=request.GET.get('sell'), members=request.user).exists():
             return redirect('messages')
         return super().dispatch(request, *args, **kwargs)

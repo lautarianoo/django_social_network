@@ -19,14 +19,14 @@
                                  <div class="card-body">
                                      <h5 class="card-title"><a href="#">{{ member.first_name }} {{ member.last_name }}</a></h5>
                                    {% if not room.last_message.read %}
-                                       <a style="text-decoration: none; color: black" href="{% url 'room_view' %}?sell={{ room.id }}"><p class="card-text"><img src="{{ room.last_message.author.avatar.url }}" alt="" class="m-2" height="35" width="35">
+                                       <a style="text-decoration: none; color: black" href="{% url 'room_view' %}?sell={{ room.id }}"><p class="card-text"><img src="{% if room.last_message.author.avatar %}{{ room.last_message.author.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" class="m-2" height="35" width="35">
                                            {{ room.last_message.text }}
                                    </p></a>
                                        <a  href="{% url 'room_view' %}?sell={{ room.id }}"><p class="btn btn-primary">{{ room.noread_messages }} непрочитанных</p></a>
                                    {% else %}
-                                        <p class="card-text"><img src="{{ room.last_message.author.avatar.url }}" alt="" class="m-2" height="35" width="35"> {{ room.last_message.text }}</p>
+                                       <a style="text-decoration: none; color: black;" href="{% url 'room_view' %}?sell={{ room.id }}"><p class="card-text"><img src="{% if room.last_message.author.avatar %}{{ room.last_message.author.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" class="m-2" height="35" width="35"> {{ room.last_message.text }}</p></a>
                                    {% endif %}
-                                   <p class="card-text"><a href="#">Написать сообщение</a></p>
+                                   <p class="card-text "><a href="#">Написать сообщение</a></p>
                                  </div>
                                </div>
                              </div>
@@ -45,6 +45,7 @@
                                            {{ room.last_message.text }}
                                        </p></a>
                                        <a href="{% url 'room_view' %}?sell={{ room.slug }}"><p class="btn btn-primary btn-block">{{ room.noread_messages }} непрочитанных</p></a>
+                                   {% elif not room.last_message %}
                                    {% else %}
                                         <p class="card-text"><img src="{{ room.last_message.author.avatar.url }}" alt="" class="m-2" height="35" width="35"> {{ room.last_message.text }}</p>
                                    {% endif %}
