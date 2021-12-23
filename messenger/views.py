@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import Room, Message
+from profiles.models import SocialUser
 
 class AllMessages(View):
 
@@ -18,6 +19,9 @@ class RoomView(View):
         else:
             room = Room.objects.get(id=request.GET.get('sell'))
             context['room'] = room
+            context['room_id'] = room.id
+            second_member = [member for member in room.members.all() if member != request.user]
+            context['second_member'] = second_member[0]
         room.messages_room.filter(read=False).exclude(author=request.user).update(read=True)
         return render(request, 'messenger/room.html', context)
 

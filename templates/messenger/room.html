@@ -9,7 +9,19 @@
       <div class="col-md-6 col-lg-7 col-xl-8">
 
           {% if not room.conference %}
-        <ul class="list-unstyled">
+               <div class="row mb-5">
+                    <div class="col-2">
+                        <a href="{% url 'profile' slug=second_member.username %}"><img src="{% if second_member.avatar %}{{ second_member.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="avatar"
+                               class="rounded-circle d-flex align-self-start me-3 shadow-1-strong" style="margin-left: auto;" width="60"></a>
+                    </div>
+
+                    <div class="col-3">
+                        <a style="text-decoration: none; color: black;" href="{% url 'profile' slug=second_member.username %}"><h5>{{ second_member.first_name }} {{ second_member.last_name }}</h5></a>
+                    </div>
+               </div>
+        <hr>
+
+        <ul class="list-unstyled mt-5">
             {% if room.messages_room.all %}
                 {% for message in room.messages_room.all %}
               {% if message.author != request.user %}
@@ -52,17 +64,15 @@
           {% endif %}
           <li class="bg-white mb-3">
             <div class="form-outline">
-              <textarea class="form-control" id="textAreaExample2" rows="4"></textarea>
-              <label class="form-label" for="textAreaExample2">Message</label>
+                <textarea class="form-control" id="chat-log" cols="10" rows="4"></textarea><br>
+                <input id="chat-message-input" type="text" size="100"><br>
+                <input id="chat-message-submit" type="button" value="Send">
+                {{ room_id|json_script:"room-name" }}
             </div>
           </li>
           <button type="button" class="btn btn-info btn-rounded float-end">Send</button>
         </ul>
             {% endif %}
-
-
-
-
 
       </div>
 
@@ -70,4 +80,40 @@
 
   </div>
 </section>
+    <script>
+        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + roomName
+            + '/'
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            document.querySelector('#chat-log').value += (data.message + '\n');
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter, return
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
+
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            messageInputDom.value = '';
+        };
+    </script>
 {% endblock profile %}
