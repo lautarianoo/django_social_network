@@ -13,7 +13,7 @@ class RoomView(View):
 
     def get(self, request, *args, **kwargs):
         context = {}
-        if Room.objects.filter(slug=request.GET.get('sell')).exists():
+        if  Room.objects.filter(slug=request.GET.get('sell')).exists():
             room = Room.objects.get(slug=request.GET.get('sell'))
             context['room'] = room
         else:
@@ -32,3 +32,4 @@ class RoomView(View):
         if not Room.objects.filter(slug=request.GET.get('sell'), members=request.user).exists() and not Room.objects.filter(id=request.GET.get('sell'), members=request.user).exists():
             return redirect('messages')
         return super().dispatch(request, *args, **kwargs)
+
