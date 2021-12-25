@@ -27,7 +27,7 @@
               {% if message.author != request.user %}
           <li class="d-flex justify-content-between mb-4">
             <img src="{% if message.author.avatar %}{{ message.author.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="avatar"
-              class="rounded-circle d-flex align-self-start me-3 shadow-1-strong" style="margin-left: auto;" width="60">
+              class="rounded-circle d-flex align-self-start me-3 shadow+-1-strong" style="margin-left: auto;" width="60">
             <div class="card">
               <div class="card-header d-flex justify-content-between p-3">
                 <p class="fw-bold mb-0 m-2">{{ message.author.first_name }} {{ message.author.last_name }}</p>
@@ -64,10 +64,13 @@
           {% endif %}
           <li class="bg-white mb-3">
             <div class="form-outline">
-                <textarea class="form-control" id="chat-log" cols="10" rows="4"></textarea><br>
-                <input id="chat-message-input" type="text" size="100"><br>
-                <input id="chat-message-submit" type="button" value="Send">
-                {{ room_id|json_script:"room-name" }}
+                <form onsubmit="return false;">
+                    <textarea cols="20" id="chat-message-input"></textarea>
+                    <em id="typing"></em><br>
+                    <button id="chat-message-submit" class="btn btn-primary">Отправить</button>
+                </form>
+                {{ room_id|json_script:"room-id" }}
+                {{ username|json_script:"author-name" }}
             </div>
           </li>
           <button type="button" class="btn btn-info btn-rounded float-end">Send</button>
@@ -81,20 +84,37 @@
   </div>
 </section>
     <script>
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+         const roomId = JSON.parse(document.getElementById('room-id').textContent);
+         const author = JSON.parse(document.getElementById('author-name').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
             + '/ws/chat/'
-            + roomName
+            + roomId
             + '/'
         );
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
+
         };
+
+        document.querySelector('#chat-message-input').addEventListener("keypress", function () {
+            {#chatSocket.emit("typing", username);#}
+            chatSocket.send(JSON.stringify({
+                'command': 'typing_start',
+                'author': author,
+            }));
+        });
+
+        document.querySelector('#chat-message-input').addEventListener("keyup", function () {
+            setTimeout(() => {
+                chatSocket.send(JSON.stringify({
+                    'command': 'typing_stop',
+                }));
+            }, 300);
+        });
 
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
@@ -111,9 +131,15 @@
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
-                'message': message
+                'command': 'new_message',
+                'message': message,
+                'author': author,
             }));
             messageInputDom.value = '';
         };
+
+
+
     </script>
+
 {% endblock profile %}

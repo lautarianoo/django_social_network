@@ -17,7 +17,7 @@ class ChatConsumer(WebsocketConsumer):
     def new_message(self, data):
 
         author = data['author']
-        author_user = User.objects.filter(username=author)[0]
+        author_user = User.objects.filter(username=author.username)[0]
         message = Message.objects.create(
             author=author_user,
             text=data['message'],
@@ -29,6 +29,19 @@ class ChatConsumer(WebsocketConsumer):
         }
         return self.send_chat_message(content)
 
+    def typing_start(self, data):
+        author = data['author']
+        content = {
+            'command': 'typing_start',
+            'message': author
+        }
+        return self.send_chat_message(content)
+
+    def typing_stop(self, data):
+        content = {
+            'command': 'typing_stop'
+        }
+        return self.send_chat_message(content)
 
     def messages_to_json(self, messages):
         result = []
@@ -46,6 +59,8 @@ class ChatConsumer(WebsocketConsumer):
 
     commands = {
         'new_message': new_message,
+        'typing_start': typing_start,
+        'typing_stop': typing_stop,
     }
 
     def connect(self):
