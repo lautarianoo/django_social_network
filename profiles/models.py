@@ -157,8 +157,7 @@ class SocialUser(AbstractBaseUser):
             self.avatar = InMemoryUploadedFile(
                 filestream, 'ImageField', name, 'jpeg/image', sys.getsizeof(filestream), None
             )
-        if not self.full_name:
-            self.full_name = f'{self.first_name} {self.last_name}'
+        self.full_name = f'{self.first_name} {self.last_name}'
         super().save(*args, **kwargs)
 
 

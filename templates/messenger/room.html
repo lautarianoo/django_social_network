@@ -21,10 +21,11 @@
                </div>
         <hr>
 
-        <ul class="list-unstyled mt-5">
+        <ul class="list-unstyled mt-5 chatting-area">
             {% if room.messages_room.all %}
                 {% for message in room.messages_room.all %}
               {% if message.author != request.user %}
+
           <li class="d-flex justify-content-between mb-4">
             <img src="{% if message.author.avatar %}{{ message.author.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="avatar"
               class="rounded-circle d-flex align-self-start me-3 shadow+-1-strong" style="margin-left: auto;" width="60">
@@ -38,7 +39,7 @@
                   {{ message.text }}
                 </p>
               </div>
-            </div>
+                </div>
           </li>
           {% else %}
 
@@ -62,19 +63,17 @@
           {% else %}
                <h2>Начните диалог прямо сейчас!</h2>
           {% endif %}
-          <li class="bg-white mb-3">
-            <div class="form-outline">
+        </ul>
+               <div class="form-outline">
                 <form onsubmit="return false;">
-                    <textarea cols="20" id="chat-message-input"></textarea>
                     <em id="typing"></em><br>
+                    <textarea cols="20" id="chat-message-input"></textarea>
                     <button id="chat-message-submit" class="btn btn-primary">Отправить</button>
                 </form>
                 {{ room_id|json_script:"room-id" }}
                 {{ username|json_script:"author-name" }}
+                {{ name|json_script:"author-full-name" }}
             </div>
-          </li>
-          <button type="button" class="btn btn-info btn-rounded float-end">Send</button>
-        </ul>
             {% endif %}
 
       </div>
@@ -86,6 +85,7 @@
     <script>
          const roomId = JSON.parse(document.getElementById('room-id').textContent);
          const author = JSON.parse(document.getElementById('author-name').textContent);
+         const fullName = JSON.parse(document.getElementById('author-full-name').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -97,7 +97,13 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-
+            if (data['command'] === 'new_message') {
+                createMessage(data['message']);
+            } else if (data['command'] === 'typing_start') {
+                document.getElementById("typing").innerHTML = data["message"] + " is typing";
+            } else if (data['command'] === 'typing_stop') {
+                document.getElementById("typing").innerHTML = "";
+            }
         };
 
         document.querySelector('#chat-message-input').addEventListener("keypress", function () {
@@ -138,6 +144,24 @@
             messageInputDom.value = '';
         };
 
+        function createMessage(data) {
+            const htmlMessage = `<li class="d-flex justify-content-between mb-4">
+                                <div class="card w-100">
+                                    <div class="card-header d-flex justify-content-between p-3">
+                                        <p class="fw-bold mb-0 m-2">${fullName}</p>
+                                        <p class="text-muted small mb-0 m-2"><i class="far fa-clock"></i>${data['timestamp']}</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="mb-0">
+                                            ${data['content']}
+                                        </p>
+                                    </div>
+                                </div>
+                                <img src="${data['imageurl']}" alt="avatar"
+                                class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong" style="margin-right: auto;" width="60">
+                            </li>`;
+            $('.chatting-area').append(htmlMessage);
+        }
 
 
     </script>

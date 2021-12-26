@@ -21,6 +21,7 @@ class RoomView(View):
             context['room'] = room
             context['room_id'] = room.id
             context['username'] = request.user.username
+            context['name'] = request.user.full_name
             second_member = [member for member in room.members.all() if member != request.user]
             context['second_member'] = second_member[0]
         room.messages_room.filter(read=False).exclude(author=request.user).update(read=True)
