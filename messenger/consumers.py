@@ -5,8 +5,11 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.contrib.auth import get_user_model
 from .models import Message, Room
+from .views import get_second_member
+
 User = get_user_model()
 
+'''ДИАЛОГ'''
 class ChatConsumer(WebsocketConsumer):
 
     def __init__(self, *args, **kwargs):
@@ -18,6 +21,7 @@ class ChatConsumer(WebsocketConsumer):
 
         author = data['author']
         author_user = User.objects.filter(username=author)[0]
+        self.second_member = get_second_member(self.room, author_user)
         message = Message.objects.create(
             author=author_user,
             text=data['message'],
@@ -25,7 +29,7 @@ class ChatConsumer(WebsocketConsumer):
         )
         content = {
             'command': 'new_message',
-            'message': self.message_to_json(message)
+            'message': self.message_to_json(message, self.second_member)
         }
         return self.send_chat_message(content)
 
@@ -50,11 +54,13 @@ class ChatConsumer(WebsocketConsumer):
         return result
 
     @staticmethod
-    def message_to_json(message):
+    def message_to_json(message, second_member):
         return {
             'author': message.author.username,
             'content': message.text,
             'imageurl': message.author.avatar.url,
+            'second-member-username': second_member.username,
+            'fullname': message.author.full_name,
             'timestamp': str(message.date_add)
         }
 
@@ -99,3 +105,8 @@ class ChatConsumer(WebsocketConsumer):
     def chat_message(self, event):
         message = event['message']
         self.send(text_data=json.dumps(message))
+
+'''БЕСЕДА'''
+class ConferenceConsumer(WebsocketConsumer):
+
+    pass

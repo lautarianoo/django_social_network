@@ -3,6 +3,10 @@ from django.views import View
 from .models import Room, Message
 from profiles.models import SocialUser
 
+def get_second_member(room, user):
+    second_member = [member for member in room.members.all() if member != user]
+    return second_member[0]
+
 class AllMessages(View):
 
     def get(self, request, *args, **kwargs):
@@ -16,16 +20,20 @@ class RoomView(View):
         if  Room.objects.filter(slug=request.GET.get('sell')).exists():
             room = Room.objects.get(slug=request.GET.get('sell'))
             context['room'] = room
+            context['messages'] = room.messages_room.order_by('-pk')
+            room.messages_room.filter(read=False).exclude(author=request.user).update(read=True)
+            return render(request, 'messenger/conference.html', context)
         else:
             room = Room.objects.get(id=request.GET.get('sell'))
+            context['messages'] = room.messages_room.order_by('-pk')
             context['room'] = room
             context['room_id'] = room.id
             context['username'] = request.user.username
-            context['name'] = request.user.full_name
             second_member = [member for member in room.members.all() if member != request.user]
             context['second_member'] = second_member[0]
-        room.messages_room.filter(read=False).exclude(author=request.user).update(read=True)
-        return render(request, 'messenger/room.html', context)
+            context['second_member_username'] = second_member[0].username
+            room.messages_room.filter(read=False).exclude(author=request.user).update(read=True)
+            return render(request, 'messenger/room.html', context)
 
     def post(self, request, *args, **kwargs):
         pass

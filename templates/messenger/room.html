@@ -1,10 +1,10 @@
 {% extends 'base_for_templates.html' %}
 {% load static %}
 {% block profile %}
-    <section style="background-color: #eee;">
+    <section>
   <div class="container py-5">
 
-    <div class="row">
+    <div class="row" >
 
       <div class="col-md-6 col-lg-7 col-xl-8">
 
@@ -20,16 +20,15 @@
                     </div>
                </div>
         <hr>
-
-        <ul class="list-unstyled mt-5 chatting-area">
+         <ul class="list-unstyled mt-5 chatting-area">
             {% if room.messages_room.all %}
-                {% for message in room.messages_room.all %}
+                {% for message in messages %}
               {% if message.author != request.user %}
 
           <li class="d-flex justify-content-between mb-4">
             <img src="{% if message.author.avatar %}{{ message.author.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="avatar"
-              class="rounded-circle d-flex align-self-start me-3 shadow+-1-strong" style="margin-left: auto;" width="60">
-            <div class="card">
+              class="rounded-circle d-flex align-self-start me-3 shadow+-1-strong" style="margin-right: auto;" width="60">
+            <div class="card" style="margin-right: auto;">
               <div class="card-header d-flex justify-content-between p-3">
                 <p class="fw-bold mb-0 m-2">{{ message.author.first_name }} {{ message.author.last_name }}</p>
                 <p class="text-muted small mb-0 m-2"><i class="far fa-clock"></i> {{ message.date_add }}</p>
@@ -44,7 +43,7 @@
           {% else %}
 
             <li class="d-flex justify-content-between mb-4">
-            <div class="card w-100">
+            <div class="card" style="margin-left: auto;">
               <div class="card-header d-flex justify-content-between p-3">
                 <p class="fw-bold mb-0 m-2">{{ message.author.first_name }} {{ message.author.last_name }}</p>
                 <p class="text-muted small mb-0 m-2"><i class="far fa-clock"></i> {{ message.date_add }}</p>
@@ -56,7 +55,7 @@
               </div>
             </div>
             <img src="{% if message.author.avatar %}{{ message.author.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="avatar"
-              class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong" style="margin-right: auto;" width="60">
+              class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong" style="margin-left: auto;" width="60">
           </li>
                     {% endif %}
            {% endfor %}
@@ -72,7 +71,7 @@
                 </form>
                 {{ room_id|json_script:"room-id" }}
                 {{ username|json_script:"author-name" }}
-                {{ name|json_script:"author-full-name" }}
+                {{ second_member_username|json_script:"second-member-username" }}
             </div>
             {% endif %}
 
@@ -85,7 +84,7 @@
     <script>
          const roomId = JSON.parse(document.getElementById('room-id').textContent);
          const author = JSON.parse(document.getElementById('author-name').textContent);
-         const fullName = JSON.parse(document.getElementById('author-full-name').textContent);
+         const secondUsername = JSON.parse(document.getElementById('second-member-username').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -145,22 +144,24 @@
         };
 
         function createMessage(data) {
+
             const htmlMessage = `<li class="d-flex justify-content-between mb-4">
-                                <div class="card w-100">
-                                    <div class="card-header d-flex justify-content-between p-3">
-                                        <p class="fw-bold mb-0 m-2">${fullName}</p>
-                                        <p class="text-muted small mb-0 m-2"><i class="far fa-clock"></i>${data['timestamp']}</p>
-                                    </div>
-                                    <div class="card-body">
-                                        <p class="mb-0">
-                                            ${data['content']}
-                                        </p>
-                                    </div>
-                                </div>
-                                <img src="${data['imageurl']}" alt="avatar"
-                                class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong" style="margin-right: auto;" width="60">
-                            </li>`;
+                                  <div class="card" style="margin-left: auto;">
+                                      <div class="card-header d-flex justify-content-between p-3">
+                                          <p class="fw-bold mb-0 m-2">${data['fullname']}</p>
+                                          <p class="text-muted small mb-0 m-2"><i class="far fa-clock"></i>${data['timestamp']}</p>
+                                      </div>
+                                      <div class="card-body">
+                                          <p class="mb-0">
+                                              ${data['content']}
+                                          </p>
+                                      </div>
+                                  </div>
+                                  <img src="${data['imageurl']}" alt="avatar"
+                                  class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong" style="margin-left: auto;" width="60">
+                              </li>`;
             $('.chatting-area').append(htmlMessage);
+
         }
 
 
