@@ -54,3 +54,12 @@
 .message--user-2 .message__text {
   background-color: #69b4f3;
 }
+.messager {
+  height: 200px;
+  overflow-y: scroll;
+}
+.messager__message {
+  border: 1px solid gray;
+  padding: 3px 5px;
+  margin: 2px;
+}

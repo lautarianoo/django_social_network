@@ -17,11 +17,18 @@ class ChatConsumer(WebsocketConsumer):
         self.user = None
         self.room = None
 
+    def fetch_messages(self, data):
+        messages = Message.objects.filter(room=self.room).order_by('date_add')
+        content = {
+            'command': 'messages',
+            'messages': self.messages_to_json(messages),
+        }
+        return self.send_message(content)
+
     def new_message(self, data):
 
         author = data['author']
         author_user = User.objects.filter(username=author)[0]
-        self.second_member = get_second_member(self.room, author_user)
         message = Message.objects.create(
             author=author_user,
             text=data['message'],
@@ -29,7 +36,7 @@ class ChatConsumer(WebsocketConsumer):
         )
         content = {
             'command': 'new_message',
-            'message': self.message_to_json(message, self.second_member)
+            'message': self.message_to_json(message)
         }
         return self.send_chat_message(content)
 
@@ -54,18 +61,18 @@ class ChatConsumer(WebsocketConsumer):
         return result
 
     @staticmethod
-    def message_to_json(message, second_member):
+    def message_to_json(message):
         return {
             'author': message.author.username,
             'content': message.text,
             'imageurl': message.author.avatar.url,
-            'second-member-username': second_member.username,
             'fullname': message.author.full_name,
             'timestamp': str(message.date_add)
         }
 
     commands = {
         'new_message': new_message,
+        'fetch_messages': fetch_messages,
         'typing_start': typing_start,
         'typing_stop': typing_stop,
     }
@@ -101,6 +108,9 @@ class ChatConsumer(WebsocketConsumer):
                 'message': message
             }
         )
+
+    def send_message(self, message):
+        self.send(text_data=json.dumps(message))
 
     def chat_message(self, event):
         message = event['message']

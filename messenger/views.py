@@ -20,12 +20,12 @@ class RoomView(View):
         if  Room.objects.filter(slug=request.GET.get('sell')).exists():
             room = Room.objects.get(slug=request.GET.get('sell'))
             context['room'] = room
-            context['messages'] = room.messages_room.order_by('-pk')
+            context['messages'] = room.messages_room.order_by('-date_add')
             room.messages_room.filter(read=False).exclude(author=request.user).update(read=True)
             return render(request, 'messenger/conference.html', context)
         else:
             room = Room.objects.get(id=request.GET.get('sell'))
-            context['messages'] = room.messages_room.order_by('-pk')
+            context['messages'] = room.messages_room.order_by('date_add')
             context['room'] = room
             context['room_id'] = room.id
             context['username'] = request.user.username

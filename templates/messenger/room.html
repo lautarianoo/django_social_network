@@ -6,9 +6,7 @@
 
     <div class="row" >
 
-      <div class="col-md-6 col-lg-7 col-xl-8">
-
-          {% if not room.conference %}
+      <div id="messager" class="col-md-6 col-lg-7 col-xl-8 messager">
                <div class="row mb-5">
                     <div class="col-2">
                         <a href="{% url 'profile' slug=second_member.username %}"><img src="{% if second_member.avatar %}{{ second_member.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="avatar"
@@ -23,9 +21,8 @@
          <ul class="list-unstyled mt-5 chatting-area">
             {% if room.messages_room.all %}
                 {% for message in messages %}
-              {% if message.author != request.user %}
 
-          <li class="d-flex justify-content-between mb-4">
+          <li class="d-flex justify-content-between mb-4 infinite-item">
             <img src="{% if message.author.avatar %}{{ message.author.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="avatar"
               class="rounded-circle d-flex align-self-start me-3 shadow+-1-strong" style="margin-right: auto;" width="60">
             <div class="card" style="margin-right: auto;">
@@ -40,40 +37,23 @@
               </div>
                 </div>
           </li>
-          {% else %}
-
-            <li class="d-flex justify-content-between mb-4">
-            <div class="card" style="margin-left: auto;">
-              <div class="card-header d-flex justify-content-between p-3">
-                <p class="fw-bold mb-0 m-2">{{ message.author.first_name }} {{ message.author.last_name }}</p>
-                <p class="text-muted small mb-0 m-2"><i class="far fa-clock"></i> {{ message.date_add }}</p>
-              </div>
-              <div class="card-body">
-                <p class="mb-0">
-                  {{ message.text }}
-                </p>
-              </div>
-            </div>
-            <img src="{% if message.author.avatar %}{{ message.author.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="avatar"
-              class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong" style="margin-left: auto;" width="60">
-          </li>
-                    {% endif %}
            {% endfor %}
           {% else %}
-               <h2>Начните диалог прямо сейчас!</h2>
+
           {% endif %}
         </ul>
+        <h2 id="start-dialog"></h2>
                <div class="form-outline">
                 <form onsubmit="return false;">
                     <em id="typing"></em><br>
-                    <textarea cols="20" id="chat-message-input"></textarea>
-                    <button id="chat-message-submit" class="btn btn-primary">Отправить</button>
+                    <textarea cols="20" id="chat-message-input"></textarea><br>
+                    <button id="chat-message-submit" hidden>Отправить</button>
                 </form>
                 {{ room_id|json_script:"room-id" }}
                 {{ username|json_script:"author-name" }}
                 {{ second_member_username|json_script:"second-member-username" }}
+                {{ messages|json_script:"messages" }}
             </div>
-            {% endif %}
 
       </div>
 
@@ -82,9 +62,25 @@
   </div>
 </section>
     <script>
-         const roomId = JSON.parse(document.getElementById('room-id').textContent);
-         const author = JSON.parse(document.getElementById('author-name').textContent);
-         const secondUsername = JSON.parse(document.getElementById('second-member-username').textContent);
+        const messagess = document.querySelector('.chatting-area');
+        if (messagess.children.length !== 0) {
+                document.getElementById('start-dialog').innerHTML = '';
+        } else {
+                document.getElementById('start-dialog').innerHTML = 'Начните диалог прямо сейчас!';
+        }
+
+        $(document).ready(function () {
+            const messages = $('.chatting-area');
+            {#console.log(messages.prop("scrollHeight"));#}
+            messages.animate({
+                scrollTop: messages.offset().top + 50
+            }, 'slow');
+        });
+
+        const roomId = JSON.parse(document.getElementById('room-id').textContent);
+        const author = JSON.parse(document.getElementById('author-name').textContent);
+        const secondUsername = JSON.parse(document.getElementById('second-member-username').textContent);
+        const viewMessages = JSON.parse(document.getElementById('messages').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -93,6 +89,10 @@
             + roomId
             + '/'
         );
+
+        chatSocket.onopen = function(e) {
+            fetchMessages();
+        };
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
@@ -107,6 +107,7 @@
 
         document.querySelector('#chat-message-input').addEventListener("keypress", function () {
             {#chatSocket.emit("typing", username);#}
+            document.querySelector('#chat-message-submit').disabled = false;
             chatSocket.send(JSON.stringify({
                 'command': 'typing_start',
                 'author': author,
@@ -128,41 +129,69 @@
         document.querySelector('#chat-message-input').focus();
         document.querySelector('#chat-message-input').onkeyup = function(e) {
             if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#chat-message-submit').click();
+                if (document.querySelector('#chat-message-input').value === 0) {
+                    document.querySelector('#chat-message-submit').disabled = true;
+                } else {
+                    document.querySelector('#chat-message-submit').click();
+                }
             }
         };
 
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'command': 'new_message',
-                'message': message,
-                'author': author,
-            }));
-            messageInputDom.value = '';
+            document.getElementById('start-dialog').innerHTML = '';
+            if (message.replace(/\s/g, '').length === 0) {
+                document.querySelector('#chat-message-submit').disabled = true;
+            } else {
+                chatSocket.send(JSON.stringify({
+                    'command': 'new_message',
+                    'message': message,
+                    'author': author,
+                }));
+                messageInputDom.value = '';
+            }
         };
+        
+        function fetchMessages() {
+            chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'author': author}));
+        }
 
         function createMessage(data) {
 
             const htmlMessage = `<li class="d-flex justify-content-between mb-4">
-                                  <div class="card" style="margin-left: auto;">
-                                      <div class="card-header d-flex justify-content-between p-3">
-                                          <p class="fw-bold mb-0 m-2">${data['fullname']}</p>
-                                          <p class="text-muted small mb-0 m-2"><i class="far fa-clock"></i>${data['timestamp']}</p>
-                                      </div>
-                                      <div class="card-body">
-                                          <p class="mb-0">
-                                              ${data['content']}
-                                          </p>
-                                      </div>
-                                  </div>
-                                  <img src="${data['imageurl']}" alt="avatar"
-                                  class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong" style="margin-left: auto;" width="60">
-                              </li>`;
+            <img src="${data['imageurl']}" alt="avatar"
+              class="rounded-circle d-flex align-self-start me-3 shadow+-1-strong" style="margin-right: auto;" width="60">
+            <div class="card" style="margin-right: auto;">
+              <div class="card-header d-flex justify-content-between p-3">
+                <p class="fw-bold mb-0 m-2">${data['fullname']}</p>
+                <p class="text-muted small mb-0 m-2"><i class="far fa-clock"></i>${data['timestamp']}</p>
+              </div>
+              <div class="card-body">
+                <p class="mb-0">
+                  ${data['content']}
+                </p>
+              </div>
+                </div>
+          </li>`;
             $('.chatting-area').append(htmlMessage);
-
         }
+
+        function paginationMessage(messages) {
+            jQuery('#messager').prepend(messages);
+        }
+
+        let messagerr = $('#messager');
+        messagerr.scrollTop(messagerr[0].scrollHeight);
+
+        messagerr.scroll(function () {
+          let lastHeight = $(this)[0].scrollHeight;
+          console.warn(lastHeight);
+          if ($(this)[0].scrollTop === 0) {
+            let newHeight = $(this)[0].scrollHeight;
+            messagerr.scrollTop(newHeight - lastHeight);
+          }
+        });
 
 
     </script>
