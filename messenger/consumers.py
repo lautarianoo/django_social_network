@@ -1,11 +1,12 @@
 import json
 from channels.generic.websocket import WebsocketConsumer
-
+import random
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.contrib.auth import get_user_model
 from .models import Message, Room
 from .views import get_second_member
+from profiles.models import PhotosUser
 
 User = get_user_model()
 
@@ -24,6 +25,19 @@ class ChatConsumer(WebsocketConsumer):
             'messages': self.messages_to_json(messages),
         }
         return self.send_message(content)
+
+    def new_image(self, data):
+        author = User.objects.filter(username=data['author'])
+        new_image = PhotosUser.objects.create(
+            image=data['image'])
+        image_slug = f"{random.randint(1, 99999999)}_{author.id}{new_image.id}_%{random.randint(1, 99)}"
+        new_image.slug = image_slug
+        new_image.save()
+        content = {
+            'command': 'new_image',
+            'image': '',
+        }
+        return self.send_chat_message(content)
 
     def new_message(self, data):
 
@@ -72,6 +86,7 @@ class ChatConsumer(WebsocketConsumer):
 
     commands = {
         'new_message': new_message,
+        'new_image': new_image,
         'fetch_messages': fetch_messages,
         'typing_start': typing_start,
         'typing_stop': typing_stop,

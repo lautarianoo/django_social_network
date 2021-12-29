@@ -6,68 +6,45 @@
 
     <div class="row" >
 
-      <div id="messager" class="col-md-6 col-lg-7 col-xl-8 messager">
-               <div class="row mb-5">
-                    <div class="col-2">
-                        <a href="{% url 'profile' slug=second_member.username %}"><img src="{% if second_member.avatar %}{{ second_member.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="avatar"
-                               class="rounded-circle d-flex align-self-start me-3 shadow-1-strong" style="margin-left: auto;" width="60"></a>
-                    </div>
+        <div id="frame">
 
-                    <div class="col-3">
-                        <a style="text-decoration: none; color: black;" href="{% url 'profile' slug=second_member.username %}"><h5>{{ second_member.first_name }} {{ second_member.last_name }}</h5></a>
-                    </div>
-               </div>
-        <hr>
-         <ul class="list-unstyled mt-5 chatting-area">
-            {% if room.messages_room.all %}
-                {% for message in messages %}
+	<div class="content">
+		<div class="contact-profile">
+            <a href="{% url 'profile' slug=second_member.username %}"><img src="{% if second_member.avatar %}{{ second_member.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" /></a>
+            <a style="text-decoration: none; color:black;" href="{% url 'profile' slug=second_member.username %}"><p>{{ second_member.full_name }}</p></a>
+			<div class="social-media">
+				<i class="fa fa-facebook" aria-hidden="true"></i>
+				<i class="fa fa-twitter" aria-hidden="true"></i>
+				 <i class="fa fa-instagram" aria-hidden="true"></i>
+			</div>
+		</div>
+		<div class="messages">
+            <ul id="chatting-area" class="chatting-area">
 
-          <li class="d-flex justify-content-between mb-4 infinite-item">
-            <img src="{% if message.author.avatar %}{{ message.author.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="avatar"
-              class="rounded-circle d-flex align-self-start me-3 shadow+-1-strong" style="margin-right: auto;" width="60">
-            <div class="card" style="margin-right: auto;">
-              <div class="card-header d-flex justify-content-between p-3">
-                <p class="fw-bold mb-0 m-2">{{ message.author.first_name }} {{ message.author.last_name }}</p>
-                <p class="text-muted small mb-0 m-2"><i class="far fa-clock"></i> {{ message.date_add }}</p>
-              </div>
-              <div class="card-body">
-                <p class="mb-0">
-                  {{ message.text }}
-                </p>
-              </div>
-                </div>
-          </li>
-           {% endfor %}
-          {% else %}
-
-          {% endif %}
-        </ul>
-        <h2 id="start-dialog"></h2>
-               <div class="form-outline">
-                <form onsubmit="return false;">
-                    <em id="typing"></em><br>
-                    <textarea cols="20" id="chat-message-input"></textarea><br>
-                    <button id="chat-message-submit" hidden>Отправить</button>
-                </form>
+            </ul>
+		</div>
+		<div class="message-input">
+			<div class="wrap">
+             <form onsubmit="return false;">
+                 <em id="typing"></em><br>
+			    <input id="chat-message-input" type="text" placeholder="Write your message..." />
+			    <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+			    <button id="chat-message-submit" class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+             </form>
                 {{ room_id|json_script:"room-id" }}
                 {{ username|json_script:"author-name" }}
                 {{ second_member_username|json_script:"second-member-username" }}
-                {{ messages|json_script:"messages" }}
             </div>
-
-      </div>
+		</div>
+	</div>
+</div>
 
     </div>
 
   </div>
 </section>
-    <script>
+    <script>$(".messages").animate({ scrollTop: $(document).height() }, "fast");
         const messagess = document.querySelector('.chatting-area');
-        if (messagess.children.length !== 0) {
-                document.getElementById('start-dialog').innerHTML = '';
-        } else {
-                document.getElementById('start-dialog').innerHTML = 'Начните диалог прямо сейчас!';
-        }
 
         $(document).ready(function () {
             const messages = $('.chatting-area');
@@ -80,7 +57,6 @@
         const roomId = JSON.parse(document.getElementById('room-id').textContent);
         const author = JSON.parse(document.getElementById('author-name').textContent);
         const secondUsername = JSON.parse(document.getElementById('second-member-username').textContent);
-        const viewMessages = JSON.parse(document.getElementById('messages').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -96,7 +72,11 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            if (data['command'] === 'new_message') {
+            if (data['command'] === 'messages') {
+                for (let i = 0; i < data['messages'].length; i++) {
+                    createMessage(data['messages'][i]);
+                }
+            } else if (data['command'] === 'new_message') {
                 createMessage(data['message']);
             } else if (data['command'] === 'typing_start') {
                 document.getElementById("typing").innerHTML = data["message"] + " is typing";
@@ -140,7 +120,6 @@
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
-            document.getElementById('start-dialog').innerHTML = '';
             if (message.replace(/\s/g, '').length === 0) {
                 document.querySelector('#chat-message-submit').disabled = true;
             } else {
@@ -159,39 +138,26 @@
 
         function createMessage(data) {
 
-            const htmlMessage = `<li class="d-flex justify-content-between mb-4">
-            <img src="${data['imageurl']}" alt="avatar"
-              class="rounded-circle d-flex align-self-start me-3 shadow+-1-strong" style="margin-right: auto;" width="60">
-            <div class="card" style="margin-right: auto;">
-              <div class="card-header d-flex justify-content-between p-3">
-                <p class="fw-bold mb-0 m-2">${data['fullname']}</p>
-                <p class="text-muted small mb-0 m-2"><i class="far fa-clock"></i>${data['timestamp']}</p>
-              </div>
-              <div class="card-body">
-                <p class="mb-0">
-                  ${data['content']}
-                </p>
-              </div>
-                </div>
-          </li>`;
+            const htmlMessage = `<p style="float:right;margin-right:20px;">${data['fullname']}</p>
+                                <li class="replies" style="margin-right:auto;">
+                                    <img src="${data['imageurl']}" alt="" />
+                                    <p>${data['content']}</p>
+                                 </li>`;
             $('.chatting-area').append(htmlMessage);
+            $(".messages").animate({ scrollTop: $(document).height()*1000000 }, "fast");
         }
 
-        function paginationMessage(messages) {
-            jQuery('#messager').prepend(messages);
-        }
-
-        let messagerr = $('#messager');
-        messagerr.scrollTop(messagerr[0].scrollHeight);
-
-        messagerr.scroll(function () {
-          let lastHeight = $(this)[0].scrollHeight;
-          console.warn(lastHeight);
-          if ($(this)[0].scrollTop === 0) {
-            let newHeight = $(this)[0].scrollHeight;
-            messagerr.scrollTop(newHeight - lastHeight);
-          }
-        });
+     //   let messagerr = $('#messager');
+     //   messagerr.scrollTop(messagerr[0].scrollHeight);
+//
+     //   messagerr.scroll(function () {
+     //     let lastHeight = $(this)[0].scrollHeight;
+     //     console.warn(lastHeight);
+     //     if ($(this)[0].scrollTop === 0) {
+     //       let newHeight = $(this)[0].scrollHeight;
+     //       messagerr.scrollTop(newHeight - lastHeight);
+     //     }
+     //   });
 
 
     </script>
