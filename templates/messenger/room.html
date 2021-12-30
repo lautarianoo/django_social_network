@@ -35,6 +35,7 @@
                 {{ username|json_script:"author-name" }}
                 {{ second_member_username|json_script:"second-member-username" }}
             </div>
+
 		</div>
 	</div>
 </div>
@@ -140,7 +141,7 @@
 
             const htmlMessage = `<p style="float:right;margin-right:20px;">${data['fullname']}</p>
                                 <li class="replies" style="margin-right:auto;">
-                                    <img src="${data['imageurl']}" alt="" />
+                                    <img height="40" src="${data['imageurl']}" alt="" />
                                     <p>${data['content']}</p>
                                  </li>`;
             $('.chatting-area').append(htmlMessage);

@@ -25,6 +25,8 @@ class Room(models.Model):
             self.slug = new_slug
         if not self.title and self.conference:
             self.title = f"{self.members.first()}, {self.members.last()}"
+        if not self.title and not self.conference:
+            self.title = f"{self.members.first()}, {self.members.last()}"
         super().save(*args, **kwargs)
 
     def last_message(self):
@@ -62,6 +64,7 @@ class Message(models.Model):
         if Room.objects.filter(messages_conference=cls, conference=False):
             return True
         return False
+
     class Meta:
 
         verbose_name = 'Сообщение'

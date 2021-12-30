@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import Room, Message
@@ -11,6 +12,12 @@ class AllMessages(View):
 
     def get(self, request, *args, **kwargs):
         rooms = Room.objects.filter(members=request.user)
+        return render(request, 'messenger/messages.html', {'rooms': rooms})
+
+class SearchRoom(View):
+
+    def get(self, request, *args, **kwargs):
+        rooms = Room.objects.filter(title__icontains=request.GET.get('conf'))
         return render(request, 'messenger/messages.html', {'rooms': rooms})
 
 class RoomView(View):
@@ -42,4 +49,3 @@ class RoomView(View):
         if not Room.objects.filter(slug=request.GET.get('sell'), members=request.user).exists() and not Room.objects.filter(id=request.GET.get('sell'), members=request.user).exists():
             return redirect('messages')
         return super().dispatch(request, *args, **kwargs)
-

@@ -1,3 +1,4 @@
+import base64
 import json
 from channels.generic.websocket import WebsocketConsumer
 import random
@@ -25,19 +26,6 @@ class ChatConsumer(WebsocketConsumer):
             'messages': self.messages_to_json(messages),
         }
         return self.send_message(content)
-
-    def new_image(self, data):
-        author = User.objects.filter(username=data['author'])
-        new_image = PhotosUser.objects.create(
-            image=data['image'])
-        image_slug = f"{random.randint(1, 99999999)}_{author.id}{new_image.id}_%{random.randint(1, 99)}"
-        new_image.slug = image_slug
-        new_image.save()
-        content = {
-            'command': 'new_image',
-            'image': '',
-        }
-        return self.send_chat_message(content)
 
     def new_message(self, data):
 
@@ -86,7 +74,6 @@ class ChatConsumer(WebsocketConsumer):
 
     commands = {
         'new_message': new_message,
-        'new_image': new_image,
         'fetch_messages': fetch_messages,
         'typing_start': typing_start,
         'typing_stop': typing_stop,

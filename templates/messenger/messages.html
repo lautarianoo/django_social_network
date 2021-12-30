@@ -3,8 +3,8 @@
 {% block profile %}
     <div class="row">
         <div class="col-8">
-            <form action="#" class="w-100 me-3" method="get">
-          <input type="search" class="form-control" placeholder="Поиск" aria-label="Search" name="mes">
+            <form action="{% url 'searching-room' %}" class="w-100 me-3" method="get">
+          <input type="search" class="form-control" placeholder="Поиск" aria-label="Search" name="conf">
         </form>
             <div class="mt-2">
                 {% for room in rooms %}
@@ -18,7 +18,7 @@
                                <div class="col-md-4">
                                  <div class="card-body">
                                      <h5 class="card-title"><a href="#">{{ member.first_name }} {{ member.last_name }}</a></h5>
-                                   {% if not room.last_message.read %}
+                                   {% if not room.last_message.read and room.last_message.author != request.user %}
                                        <a style="text-decoration: none; color: black" href="{% url 'room_view' %}?sell={{ room.id }}"><p class="card-text"><img src="{% if room.last_message.author.avatar %}{{ room.last_message.author.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" class="m-2" height="35" width="35">
                                            {{ room.last_message.text }}
                                    </p></a>
