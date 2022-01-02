@@ -28,6 +28,8 @@ class RoomView(View):
             room = Room.objects.get(slug=request.GET.get('sell'))
             context['room'] = room
             context['messages'] = room.messages_room.order_by('-date_add')
+            context['username'] = request.user.username
+            context['slug'] = room.slug
             room.messages_room.filter(read=False).exclude(author=request.user).update(read=True)
             return render(request, 'messenger/conference.html', context)
         else:
