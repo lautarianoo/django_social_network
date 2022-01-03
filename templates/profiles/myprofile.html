@@ -112,7 +112,7 @@
             <div class="col-3" style="background-color: white; ">
                 <div class="">
                     <img src="{% if user2.avatar %}{{ user2.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" width="250" height="250">
-                    <a href="#" class="btn-primary btn m-2">Написать сообщение</a>
+                    <a href="{% url 'add-dialog' username=user2.username %}" class="btn-primary btn m-2">Написать сообщение</a>
                     {% if user2 in request.user.friends.all %}
                         <a class="btn btn-success disabled m-2" style="">У вас в друзьях</a>
                         <a class="btn btn-danger m-2" style="" href="{% url 'delete-friend' username=user2.username %}">Удалить из друзей</a>

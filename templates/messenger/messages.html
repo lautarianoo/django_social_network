@@ -40,14 +40,14 @@
                                <div class="col-md-4">
                                  <div class="card-body">
                                      <h5 class="card-title"><a href="#">{{ room.title }}</a></h5>
-                                   {% if not room.last_message.read %}
-                                       <a style="text-decoration: none; color: black" href="{% url 'room_view' %}?sell={{ room.slug }}"><p class="card-text"><img src="{{ room.last_message.author.avatar.url }}" alt="" class="m-2" height="35" width="35">
+                                   {% if not room.last_message.read and room.last_message.author != request.user %}
+                                       <a style="text-decoration: none; color: black" href="{% url 'room_view' %}?sell={{ room.id }}"><p class="card-text"><img src="{{ room.last_message.author.avatar.url }}" alt="" class="m-2" height="35" width="35">
                                            {{ room.last_message.text }}
                                        </p></a>
-                                       <a href="{% url 'room_view' %}?sell={{ room.slug }}"><p class="btn btn-primary btn-block">{{ room.noread_messages }} непрочитанных</p></a>
+                                       <a href="{% url 'room_view' %}?sell={{ room.id }}"><p class="btn btn-primary btn-block">{{ room.noread_messages }} непрочитанных</p></a>
                                    {% elif not room.last_message %}
                                    {% else %}
-                                        <a style="text-decoration: none; color: black" href="{% url 'room_view' %}?sell={{ room.slug }}">
+                                        <a style="text-decoration: none; color: black" href="{% url 'room_view' %}?sell={{ room.id }}">
                                             <p class="card-text"><img src="{{ room.last_message.author.avatar.url }}" alt="" class="m-2" height="35" width="35"> {{ room.last_message.text }}</p></a>
                                    {% endif %}
                                    <p class="card-text"><a href="#">Написать сообщение</a></p>

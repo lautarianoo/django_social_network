@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.views import View
 
 from feed.models import Feed
+from messenger.models import Room
 from .models import SocialUser, InfoUser, SubscribersUser, FollowersUser
 from .forms import EditProfileForm, LoginForm, RegisterForm
 from .mixins import PermissionMixin
@@ -230,6 +231,12 @@ class AcceptFriend(View):
         follower.subscribers.subscribers.remove(request.user)
         request.user.friends.add(follower)
         follower.friends.add(request.user)
+
+        room = Room.objects.create()
+        room.members.add(request.user)
+        room.members.add(follower)
+        room.save()
+
         return redirect('profile', slug=kwargs.get('username'))
 
 class DeleteFriend(View):

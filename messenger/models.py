@@ -26,7 +26,7 @@ class Room(models.Model):
         if not self.title and self.conference:
             self.title = f"{self.members.first()}, {self.members.last()}"
         if not self.title and not self.conference:
-            self.title = f"{self.members.first()}, {self.members.last()}"
+            self.title = f"{self.members.first().id} {self.members.last().id}"
         super().save(*args, **kwargs)
 
     def last_message(self):

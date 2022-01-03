@@ -9,15 +9,26 @@
         <div id="frame">
 
 	<div class="content">
-		<div class="contact-profile">
-            <a href="{% url 'profile' slug=second_member.username %}"><img src="{% if second_member.avatar %}{{ second_member.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" /></a>
-            <a style="text-decoration: none; color:black;" href="{% url 'profile' slug=second_member.username %}"><p>{{ second_member.full_name }}</p></a>
-			<div class="social-media">
-				<i class="fa fa-facebook" aria-hidden="true"></i>
-				<i class="fa fa-twitter" aria-hidden="true"></i>
-				 <i class="fa fa-instagram" aria-hidden="true"></i>
-			</div>
-		</div>
+        {% if not room.conference %}
+            <div class="contact-profile">
+                <a href="{% url 'profile' slug=second_member.username %}"><img src="{% if second_member.avatar %}{{ second_member.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" /></a>
+                <a style="text-decoration: none; color:black;" href="{% url 'profile' slug=second_member.username %}"><p>{{ second_member.full_name }}</p></a>
+		    	<div class="social-media">
+		    		<i class="fa fa-facebook" aria-hidden="true"></i>
+		    		<i class="fa fa-twitter" aria-hidden="true"></i>
+		    		 <i class="fa fa-instagram" aria-hidden="true"></i>
+		    	</div>
+		    </div>
+        {% else %}
+            <div class="contact-profile">
+                <img src="{% if room.avatar %}{{ room.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" />
+                <p>{{ room.title }}</p>
+                <p style="margin-left:20px;color: #8996A8; font-size: small;">{{ room.members.count }} участников</p>
+		    	<div class="social-media">
+
+		    	</div>
+		    </div>
+        {% endif %}
 		<div class="messages">
             <ul id="chatting-area" class="chatting-area">
 
