@@ -1,0 +1,22 @@
+{% extends 'base_for_templates.html' %}
+{% load static %}
+
+{% block profile %}
+    <div class="row">
+        <div class="col-8">
+         <form enctype="multipart/form-data" method="post">
+             <div class="form-group">
+                 <label for="exampleFormControlSelect1"></label>
+                 <select class="form-control" id="exampleFormControlSelect1" name="people" multiple>
+                     {% for friend in friends %}
+                      <option>
+                         <img src="{% if friend.avatar %}{{ friend.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" />
+                         <p>{{ friend.full_name }}</p>
+                      </option>
+                     {% endfor %}
+                 </select>
+             </div>
+         </form>
+        </div>
+    </div>
+{% endblock profile %}

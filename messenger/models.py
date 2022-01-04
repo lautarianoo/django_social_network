@@ -11,6 +11,8 @@ class Room(models.Model):
 
     members = models.ManyToManyField(User, related_name='conference_member2', blank=True)
     admins = models.ManyToManyField(User, related_name='conference_admin2', blank=True)
+    first_user = models.ForeignKey(User, related_name='dialog_user1', on_delete=models.SET_NULL, null=True, blank=True)
+    second_user = models.ForeignKey(User, related_name='dialog_user2', on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=150, verbose_name='Название', blank=True, null=True)
     avatar = models.ImageField(verbose_name='Аватар беседы', blank=True, null=True)
     conference = models.BooleanField(verbose_name='Конференция', default=False)

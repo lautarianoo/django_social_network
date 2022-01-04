@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -231,11 +232,14 @@ class AcceptFriend(View):
         follower.subscribers.subscribers.remove(request.user)
         request.user.friends.add(follower)
         follower.friends.add(request.user)
-
-        room = Room.objects.create()
-        room.members.add(request.user)
-        room.members.add(follower)
-        room.save()
+        title = f"{request.user.id} {follower.id}"
+        if not Room.objects.filter(Q(first_user=request.user, second_user=follower) | Q(first_user=follower, second_user=request.user)).exists():
+            room = Room.objects.create(title=title)
+            room.members.add(request.user)
+            room.members.add(follower)
+            room.first_user = request.user
+            room.second_user = follower
+            room.save()
 
         return redirect('profile', slug=kwargs.get('username'))
 

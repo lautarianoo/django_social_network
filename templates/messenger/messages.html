@@ -3,9 +3,15 @@
 {% block profile %}
     <div class="row">
         <div class="col-8">
-            <form action="{% url 'searching-room' %}" class="w-100 me-3" method="get">
-          <input type="search" class="form-control" placeholder="Поиск" aria-label="Search" name="conf">
-        </form>
+            <div class="row">
+               <div class="col-10">
+                    <form action="{% url 'searching-room' %}" class="w-100 me-3" method="get">
+                        <input type="search" class="form-control" placeholder="Поиск" aria-label="Search" name="conf">
+                    </form>
+               </div>
+                <div class="col-2">
+                    <a href="{% url 'conference-add' %}"><img src="https://cdn-icons-png.flaticon.com/512/748/748113.png" width="20" height="20" alt="Конференция"></a></div>
+                </div>
             <div class="mt-2">
                 {% for room in rooms %}
                     {% if not room.conference %}

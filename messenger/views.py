@@ -50,13 +50,24 @@ class DialogAddView(View):
     def get(self, request, *args, **kwargs):
         second_member = SocialUser.objects.get(username=kwargs.get('username'))
         title = f"{request.user.id} {second_member.id}"
-        if not Room.objects.filter(title__icontains=title).exists():
+        if not Room.objects.filter(Q(first_user=request.user, second_user=second_member) | Q(first_user=second_member, second_user=request.user)).exists():
             room = Room.objects.create(title=title)
             room.members.add(request.user)
             room.members.add(second_member)
+            room.first_user = request.user
+            room.second_user = second_member
             room.save()
         else:
             room = Room.objects.filter(title__icontains=title).first()
         response = redirect('room_view')
         response['Location'] += '?sell=' + str(room.id)
         return response
+
+class ConferenceAddView(View):
+
+    def get(self, request, *args, **kwargs):
+        friends = request.user.friends.all()
+        return render(request, 'messenger/conference-create.html', {'friends': friends})
+
+    def post(self, request, *args, **kwargs):
+        pass
