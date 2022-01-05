@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views import View
@@ -70,4 +71,19 @@ class ConferenceAddView(View):
         return render(request, 'messenger/conference-create.html', {'friends': friends})
 
     def post(self, request, *args, **kwargs):
-        pass
+        new_conference = Room.objects.create(title=request.POST.get('title'), conference=True)
+        new_conference.members.add(request.user)
+        new_conference.admins.add(request.user)
+        data = request.POST
+        if data.get('friends') and int(data.get('friends')) > 2:
+            for id_friend in data.get('friends'):
+                friend = SocialUser.objects.get(id=id_friend)
+                new_conference.members.add(friend)
+        else:
+            raise ValidationError('Выберите больше двух пользователей')
+        if request.FILES.get('avatar'):
+            new_conference.avatar = request.FILES.get('avatar')
+        new_conference.save()
+        response = redirect('room_view')
+        response['Location'] += '?sell=' + str(new_conference.id)
+        return response

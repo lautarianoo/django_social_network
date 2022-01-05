@@ -22,9 +22,6 @@ class Room(models.Model):
        return f"{self.id} | {self.title}"
 
     def save(self, *args, **kwargs):
-        if self.conference:
-            new_slug = "c{}".format(self.id)
-            self.slug = new_slug
         if not self.title and self.conference:
             self.title = f"{self.members.first()}, {self.members.last()}"
         if not self.title and not self.conference:
