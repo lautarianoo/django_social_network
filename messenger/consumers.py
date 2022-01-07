@@ -44,9 +44,11 @@ class ChatConsumer(WebsocketConsumer):
 
     def typing_start(self, data):
         author = data['author']
+        user = User.objects.filter(username=author)[0]
         content = {
             'command': 'typing_start',
-            'message': author
+            'first_name': user.first_name,
+            'last_name': user.last_name,
         }
         return self.send_chat_message(content)
 

@@ -91,7 +91,7 @@
             } else if (data['command'] === 'new_message') {
                 createMessage(data['message']);
             } else if (data['command'] === 'typing_start') {
-                document.getElementById("typing").innerHTML = data["message"] + " is typing";
+                document.getElementById("typing").innerHTML = data["first_name"] + ' ' + data['last_name'] + " печатает...";
             } else if (data['command'] === 'typing_stop') {
                 document.getElementById("typing").innerHTML = "";
             }

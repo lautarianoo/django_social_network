@@ -12,8 +12,8 @@ def get_second_member(room, user):
 class AllMessages(View):
 
     def get(self, request, *args, **kwargs):
-        rooms = Room.objects.filter(members=request.user)
-        return render(request, 'messenger/messages.html', {'rooms': rooms})
+        rooms_nofilter = Room.objects.filter(members=request.user)
+        return render(request, 'messenger/messages.html', {'rooms': rooms_nofilter})
 
 class SearchRoom(View):
 
@@ -71,12 +71,16 @@ class ConferenceAddView(View):
         return render(request, 'messenger/conference-create.html', {'friends': friends})
 
     def post(self, request, *args, **kwargs):
-        new_conference = Room.objects.create(title=request.POST.get('title'), conference=True)
+        if request.POST.get('title'):
+             new_conference = Room.objects.create(title=request.POST.get('title'), conference=True)
+        else:
+             title = f"{SocialUser.objects.get(id=request.POST.getlist('friends')[0]).first_name}, {SocialUser.objects.get(id=request.POST.getlist('friends')[-1]).first_name}"
+             new_conference = Room.objects.create(title=title, conference=True)
         new_conference.members.add(request.user)
         new_conference.admins.add(request.user)
         data = request.POST
-        if data.get('friends') and int(data.get('friends')) > 2:
-            for id_friend in data.get('friends'):
+        if data.getlist('friends') and len(data.getlist('friends')) > 1:
+            for id_friend in data.getlist('friends'):
                 friend = SocialUser.objects.get(id=id_friend)
                 new_conference.members.add(friend)
         else:
