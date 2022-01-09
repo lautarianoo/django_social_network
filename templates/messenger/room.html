@@ -24,8 +24,16 @@
                 <img src="{% if room.avatar %}{{ room.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" />
                 <p>{{ room.title }}</p>
                 <p style="margin-left:20px;color: #8996A8; font-size: small;">{{ room.members.count }} участников</p>
+                <div class="flex-shrink-0 dropdown">
+                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                    </a>
+                    <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                      <li><a class="dropdown-item" href="{% url 'conference-member-add' id=room.id %}">Добавить участника</a></li>
+                      <li><a class="dropdown-item" href="#">Поиск сообщений</a></li>
+                      <li><a class="dropdown-item" href="{% url 'conference-leave' %}?leave={{ room.id }}">Выйти из беседы</a></li>
+                    </ul>
+                 </div>
 		    	<div class="social-media">
-
 		    	</div>
 		    </div>
         {% endif %}

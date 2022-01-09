@@ -1,0 +1,31 @@
+{% extends 'base_for_templates.html' %}
+{% load static %}
+
+{% block profile %}
+    <div class="row">
+        <div class="col-8">
+         <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+             <div class="form-group">
+                <div style="overflow-y: scroll; overflow-x: hidden; height: 500px;">
+                 {% for friend in friends %}
+                     {% if friend != request.user %}
+                     <div class="m-3">
+                        <label for="friendss">
+                            <img width="50" height="50" src="{% if friend.avatar %}{{ friend.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" />
+                            <p>{{ friend.full_name }}</p>
+                        </label>
+                        <input type="checkbox" id="friendss" name="friends" value="{{ friend.id }}" multiple><br>
+                        </div>
+                     {% endif %}
+                 {% endfor %}
+                </div>
+             </div>
+            <div class="form-row mt-4 align-items-center">
+                <div class="col-auto mt-4">
+                    <button class="btn btn-primary" type="submit">Добавить участников</button>
+                </div>
+            </div>
+         </form>
+        </div>
+    </div>
+{% endblock profile %}

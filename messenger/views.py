@@ -91,3 +91,31 @@ class ConferenceAddView(View):
         response = redirect('room_view')
         response['Location'] += '?sell=' + str(new_conference.id)
         return response
+
+class AddConferenceMember(View):
+
+    def get(self, request, *args, **kwargs):
+        conference = Room.objects.get(id=kwargs.get('id'))
+        friends = request.user.friends.all()
+        return render(request, 'messenger/conference-member-add.html', {'friends': friends, 'conference': conference})
+
+    def post(self, request, *args, **kwargs):
+        conference = Room.objects.get(id=kwargs.get('id'))
+        data = request.POST
+        if data.getlist('friends'):
+            for id_friend in data.getlist('friends'):
+                friend = SocialUser.objects.get(id=id_friend)
+                if friend not in conference.members.all():
+                    conference.members.add(friend)
+            conference.save()
+        response = redirect('room_view')
+        response['Location'] += '?sell=' + str(conference.id)
+        return response
+
+class LeaveConferenceView(View):
+
+    def get(self, request, *args, **kwargs):
+        conference = Room.objects.get(id=request.GET.get('leave'))
+        conference.members.remove(request.user)
+        conference.save()
+        return redirect('messages')
