@@ -32,9 +32,11 @@ class RoomView(View):
         context['room'] = room
         context['room_id'] = room.id
         context['username'] = request.user.username
-        second_member = [member for member in room.members.all() if member != request.user]
-        context['second_member'] = second_member[0]
-        context['second_member_username'] = second_member[0].username
+        context['second_member_username'] = ''
+        if not room.conference:
+            second_member = [member for member in room.members.all() if member != request.user]
+            context['second_member'] = second_member[0]
+            context['second_member_username'] = second_member[0].username
         room.messages_room.filter(read=False).exclude(author=request.user).update(read=True)
         return render(request, 'messenger/room.html', context)
 
