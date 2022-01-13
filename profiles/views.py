@@ -1,12 +1,17 @@
+import json
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 
 from feed.models import Feed
 from messenger.models import Room
+from notification.serializers import NotificationSerializer
 from .models import SocialUser, InfoUser, SubscribersUser, FollowersUser
 from .forms import EditProfileForm, LoginForm, RegisterForm
 from .mixins import PermissionMixin
@@ -14,7 +19,7 @@ from community.models import Group
 from feed.forms import AddFeedForm
 from .models import PhotosUser
 import random
-
+from notification.models import Notification
 #class BaseView(View):
 #
 #    def get(self, request, *args, **kwargs):
@@ -267,3 +272,34 @@ class ImageView(View):
         image = PhotosUser.objects.get(slug=request.GET.get('p'))
         user = SocialUser.objects.get(username=kwargs.get('slug'))
         return render(request, 'profiles/image.html', {'image': image, 'user': user})
+
+def send_friend_request(request, username=None):
+    if username is not None:
+        friend = SocialUser.objects.filter(username=username).first()
+        notification = Notification.objects.create(type="friend", reciever=friend, author=request.user, verb=f"{friend.first_name} {friend.last_name} отправил заявку в друзья")
+        channel_layer = get_channel_layer()
+        channel = f"notifications_{friend.username}"
+        async_to_sync(channel_layer.group_send)(
+            channel, {
+                'type': 'notify',
+                'command': 'new_notification',
+                'notification': json.dumps(NotificationSerializer(notification).data)
+            }
+        )
+        data = {
+            'status': True,
+            'message': 'Request sent',
+        }
+        return JsonResponse(data)
+    else:
+        print('не удалось чё то')
+
+def accept_friend_request(request, friend=None):
+    if friend is not None:
+        friend_user = SocialUser.objects.get(username=friend)
+        Notification.objects.filter(reciever=request.user, author=friend_user).delete()
+        data = {
+            'status': True,
+            'message': 'You accepted friend request'
+        }
+        return JsonResponse(data)

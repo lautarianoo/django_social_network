@@ -18,4 +18,6 @@ urlpatterns = [
     path('search', MainSearchView.as_view(), name='search'),
     path('friends/search/', FriendSearchView.as_view(), name='search-friend'),
     path('profile/<str:slug>', ImageView.as_view(), name='image'),
+    path('send-request/<slug:username>', send_friend_request, name='send_friend_request'),
+    path('accept-request/<slug:friend>', accept_friend_request, name='accept_friend-request'),
 ]
