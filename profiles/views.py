@@ -227,7 +227,22 @@ class SubscribeView(View):
         subscriber = SocialUser.objects.get(username=kwargs.get('username'))
         subscriber.followers.followers.add(request.user)
         request.user.subscribers.subscribers.add(subscriber)
-        return redirect('profile', slug=kwargs.get('username'))
+        notification = Notification.objects.create(type="friend", reciever=subscriber, author=request.user,
+                                                   verb=f"{request.user.first_name} {request.user.last_name} отправил заявку в друзья")
+        channel_layer = get_channel_layer()
+        channel = f"notifications_{subscriber.username}"
+        async_to_sync(channel_layer.group_send)(
+            channel, {
+                'type': 'notify',
+                'command': 'new_notification',
+                'notification': json.dumps(NotificationSerializer(notification).data)
+            }
+        )
+        data = {
+            'status': True,
+            'message': 'Request sent',
+        }
+        return JsonResponse(data)
 
 class AcceptFriend(View):
 
@@ -246,7 +261,12 @@ class AcceptFriend(View):
             room.second_user = follower
             room.save()
 
-        return redirect('profile', slug=kwargs.get('username'))
+        Notification.objects.filter(reciever=request.user, author=follower).delete()
+        data = {
+            'status': True,
+            'message': 'You accepted friend request'
+        }
+        return JsonResponse(data)
 
 class DeleteFriend(View):
 
@@ -273,33 +293,3 @@ class ImageView(View):
         user = SocialUser.objects.get(username=kwargs.get('slug'))
         return render(request, 'profiles/image.html', {'image': image, 'user': user})
 
-def send_friend_request(request, username=None):
-    if username is not None:
-        friend = SocialUser.objects.filter(username=username).first()
-        notification = Notification.objects.create(type="friend", reciever=friend, author=request.user, verb=f"{friend.first_name} {friend.last_name} отправил заявку в друзья")
-        channel_layer = get_channel_layer()
-        channel = f"notifications_{friend.username}"
-        async_to_sync(channel_layer.group_send)(
-            channel, {
-                'type': 'notify',
-                'command': 'new_notification',
-                'notification': json.dumps(NotificationSerializer(notification).data)
-            }
-        )
-        data = {
-            'status': True,
-            'message': 'Request sent',
-        }
-        return JsonResponse(data)
-    else:
-        print('не удалось чё то')
-
-def accept_friend_request(request, friend=None):
-    if friend is not None:
-        friend_user = SocialUser.objects.get(username=friend)
-        Notification.objects.filter(reciever=request.user, author=friend_user).delete()
-        data = {
-            'status': True,
-            'message': 'You accepted friend request'
-        }
-        return JsonResponse(data)

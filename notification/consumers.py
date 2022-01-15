@@ -22,21 +22,18 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
         }
         self.send_json(content)
 
-    def new_notification(self):
-        pass
-
     async def connect(self):
         user = self.scope['user']
-        grp = "like_photo_notifications_{}".format(user.username)
+        grp = "new_comment_notifications_{}".format(user.username)
         await self.accept()
         await self.channel_layer.group_add(grp, self.channel_name)
 
     async def disconnect(self, code):
         user = self.scope['user']
-        grp = "like_photo_notifications_{}".format(user.username)
+        grp = "new_comment_notifications_{}".format(user.username)
         await self.channel_name.group_discard(grp, self.channel_name)
 
-    async def notife(self, event):
+    async def notify(self, event):
         await self.send_json(event)
 
     async def receive(self, text_data=None, bytes_data=None, **kwargs):

@@ -1,9 +1,15 @@
+import json
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.shortcuts import render, redirect
 from django.views import View
 from profiles.models import SocialUser
 from feed.models import Feed
 from feed.forms import CommentForm
 from community.models import Group
+from notification.models import Notification
+from notification.serializers import NotificationSerializer
 
 class FeedView(View):
 
@@ -27,4 +33,17 @@ class AddComment(View):
             new_comment.save()
             feed = Feed.objects.get(id=kwargs.get('pk'))
             feed.comments.add(new_comment)
+            feed_author = feed.user
+            notification = Notification.objects.create(type="comment", text=f"{new_comment.text[13]}..", reciever=feed_author, author=request.user,
+                                                       verb="написал(а) комментарий к вашей записи")
+            channel_layer = get_channel_layer()
+            channel = f"new_comment_notification_{feed_author.username}"
+            async_to_sync(channel_layer.group_send)(
+                channel, {
+                    "type": "notify",
+                    "command": "new_comment_notification",
+                    "notification": json.dumps(NotificationSerializer(notification).data)
+                }
+            )
         return redirect('profile', slug=request.user.username)
+

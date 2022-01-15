@@ -123,7 +123,7 @@
                         <a class="btn btn-primary disabled m-2" style="">Вы подписаны</a>
                         <a class="btn btn-primary m-2"  href="{% url 'unsubscribe' username=user2.username %}">Отписаться</a>
                     {% else %}
-                        <a class="btn btn-primary text-center m-2" href="{% url 'subscribe' username=user2.username %}">Подписаться</a>
+                        <a class="btn btn-primary text-center m-2 add-friend" href="{% url 'subscribe' username=user2.username %}">Подписаться</a>
                     {% endif %}
                 </div>
                 <p style="color: #8e908c">{{ len_general_friends }} общих друзей</p>
