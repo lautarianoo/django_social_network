@@ -37,7 +37,7 @@ function accept(li) {
 
     let friend = $(li).data('friend');
 
-    let url = `/accept-request/${friend}`;
+    let url = `/add-friend/${friend}`;
 
     $.ajax({
         type: 'POST',
@@ -67,22 +67,16 @@ friendRequestNotificationSocket.onopen = function (e) {
 function fetchFriendRequests() {
     friendRequestNotificationSocket.send(JSON.stringify({'command': 'fetch_notifications'}));
 }
-
-function createNotification(notification) {
-    let single = ``;
-    $('#friend-menu').prepend(single);
-}
-
 friendRequestNotificationSocket.onmessage = function (event) {
     let data = JSON.parse(event.data);
     if (data['command'] === 'notifications') {
         let notifications = JSON.parse(data['notifications']);
-        $('#total-friend-notifications').text(notifications.length);
+        $('#total-count-notifications').text(notifications.length);
         for (let i = 0; i < notifications.length; i++) {
             createNotification(notifications[i]);
         }
     } else if (data['command'] === 'new_notification') {
-        let notification = $('#total-friend-notifications');
+        let notification = $('#total-count-notifications');
         notification.text(parseInt(notification.text() + 1));
         createNotification(JSON.parse(data['notification']));
     }
@@ -99,9 +93,10 @@ function fetchNotifications() {
     newCommentNotificationSocket.send(JSON.stringify({'command': 'fetch_notifications'}));
 }
 
-function createNewCommentNotification(notification) {
-    let single = ``;
-    $('#new-comment-menu').prepend(single);
+function createNotification(notification) {
+    let single = `<li><a class="dropdown-item" href="#">${notification.author.full_name} ${notification.verb}: ${notification.text}</a> <span style="color: lightgrey"> 
+        ${notification.timestamp}</span></li>`;
+    $('#notifications-menu').prepend(single);
 }
 
 newCommentNotificationSocket.onopen = function (e) {
@@ -112,18 +107,18 @@ newCommentNotificationSocket.onmessage = function (event) {
     let data = JSON.parse(event.data);
     if (data['command'] === 'notifications') {
         let notifications = JSON.parse(data['notifications']);
-        $('#total-new-comment-notifications').text(notifications.length);
+        $('#total-count-notifications').text(notifications.length);
         for (let i = 0; i < notifications.length; i++) {
-            createNewCommentNotification(notifications[i]);
+            createNotification(notifications[i]);
         }
     } else if (data['command'] === 'new_comment_notification') {
-        let notification = $('#total-new-comment-notifications');
+        let notification = $('#total-count-notifications');
         notification.text(parseInt(notification.text()) + 1);
-        createNewCommentNotification(JSON.parse(data['notification']));
+        createNotification(JSON.parse(data['notification']));
     }
 };
 
-$('#mark-new-comment-notifications-as-read').click(function () {
+$('.comment-notification-as-read').click(function () {
 
     let url = $(this).data('url');
 

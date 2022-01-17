@@ -31,7 +31,7 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
     async def disconnect(self, code):
         user = self.scope['user']
         grp = "new_comment_notifications_{}".format(user.username)
-        await self.channel_name.group_discard(grp, self.channel_name)
+        await self.channel_layer.group_discard(grp, self.channel_name)
 
     async def notify(self, event):
         await self.send_json(event)

@@ -216,7 +216,18 @@
         </a>
 
       <div class="d-flex align-items-center">
-        <form action="{% url 'search' %}" class="w-100 me-3" method="get">
+        <div class="flex-shrink-0 dropdown">
+          <a href="{% url 'mark_notifications_as_read' %}" class="d-block link-dark text-decoration-none dropdown-toggle mr-3" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="{% static 'css/bell_3.svg' %}" alt="mdo" class="rounded-circle" width="20" height="20">
+          </a>
+
+          <ul class="dropdown-menu text-small shadow" id="notifications-menu" aria-labelledby="dropdownUser2">
+
+
+          </ul>
+        </div>
+        <span style="font-size: small; background-color: red; border-radius: 6px;" id="total-count-notifications"></span>
+        <form action="{% url 'search' %}" class="w-100 me-3 ml-3" method="get">
           <input type="search" class="form-control" placeholder="Поиск" aria-label="Search" name="q">
         </form>
         {% if request.user.is_authenticated %}
