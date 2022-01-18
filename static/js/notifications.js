@@ -16,11 +16,7 @@ $('.add-friend').click(function () {
         url: url,
         dataType: 'json',
         success: function (res) {
-            if (res.status === false) {
-            }
-            if (res.status === true) {
-                // $('.add-friend').text('Request Sent');
-            }
+
         },
         error: function (err) {
             console.log(err);
@@ -44,11 +40,7 @@ function accept(li) {
         url: url,
         dataType: 'json',
         success: function (res) {
-            if (res.status === false) {
-            }
-            if (res.status === true) {
 
-            }
         },
         error: function (err) {
             console.log(err);
@@ -94,8 +86,8 @@ function fetchNotifications() {
 }
 
 function createNotification(notification) {
-    let single = `<li><a class="dropdown-item" href="#">${notification.author.full_name} ${notification.verb}: ${notification.text}</a> <span style="color: lightgrey"> 
-        ${notification.timestamp}</span></li>`;
+    let single = `<li><a class="dropdown-item" href="#">${notification.verb}: ${notification.text}</a> <span style="color: lightgrey"> 
+        ${notification.timestamp.date}</span></li>`;
     $('#notifications-menu').prepend(single);
 }
 

@@ -17,7 +17,7 @@ class Notification(models.Model):
     deleted = models.BooleanField(default=False, db_index=True)
 
     def __str__(self):
-        return self.timestamp
+        return f"{self.type}"
 
     class Meta:
         verbose_name = 'Уведомление'

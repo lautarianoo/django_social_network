@@ -20,10 +20,11 @@ from feed.forms import AddFeedForm
 from .models import PhotosUser
 import random
 from notification.models import Notification
+
 #class BaseView(View):
 #
 #    def get(self, request, *args, **kwargs):
-#        return render(request, 'base.html', {})#all'})
+#        return render(request, 'base.html', {})
 
 class MainSearchView(View):
 
@@ -242,7 +243,7 @@ class SubscribeView(View):
             'status': True,
             'message': 'Request sent',
         }
-        return JsonResponse(data)
+        return redirect('friends')
 
 class AcceptFriend(View):
 
@@ -266,7 +267,7 @@ class AcceptFriend(View):
             'status': True,
             'message': 'You accepted friend request'
         }
-        return JsonResponse(data)
+        return redirect('friends')
 
 class DeleteFriend(View):
 
