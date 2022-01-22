@@ -33,17 +33,18 @@ class AddComment(View):
             new_comment.save()
             feed = Feed.objects.get(id=kwargs.get('pk'))
             feed.comments.add(new_comment)
-            feed_author = feed.user
-            notification = Notification.objects.create(type="comment", text=f"{new_comment.text[13]}..", reciever=feed_author, author=request.user,
-                                                       verb="написал(а) комментарий к вашей записи")
-            channel_layer = get_channel_layer()
-            channel = f"new_comment_notification_{feed_author.username}"
-            async_to_sync(channel_layer.group_send)(
-                channel, {
-                    "type": "notify",
-                    "command": "new_comment_notification",
-                    "notification": json.dumps(NotificationSerializer(notification).data)
-                }
-            )
+            feed_author = SocialUser.objects.get(feeds=feed)
+            if feed_author != request.user:
+                notification = Notification.objects.create(type="comment", reciever=feed_author, author=request.user,
+                                                           verb="написал(а) комментарий к вашей записи")
+                channel_layer = get_channel_layer()
+                channel = f"new_comment_notification_{feed_author.username}"
+                async_to_sync(channel_layer.group_send)(
+                    channel, {
+                        "type": "notify",
+                        "command": "new_comment_notification",
+                        "notification": json.dumps(NotificationSerializer(notification).data)
+                    }
+                )
         return redirect('profile', slug=request.user.username)
 

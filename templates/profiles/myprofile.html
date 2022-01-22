@@ -185,8 +185,7 @@
               <div class="card-body">
               <div class="row">
                 <h5 class="card-title m-2"><img src="{{ user2.avatar.url }}" alt="" height="50" width="50"> {{ user2.first_name }} {{ user2.last_name }}</h5>
-                <p class="card-text m-2">{{ feed.content }}
-                </p>
+                <a href="{% url 'feed' %}?w={{ feed.id }}" style="text-decoration: none; color: black;"><p class="card-text m-2">{{ feed.content }}</p></a>
               </div>
                   <div class="card-title m-2" style="position:absolute;top:2%;right:2%;">
                                        <div class="flex-shrink-0 dropdown">
