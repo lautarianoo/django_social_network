@@ -12,8 +12,10 @@ def get_second_member(room, user):
 class AllMessages(View):
 
     def get(self, request, *args, **kwargs):
-        rooms_nofilter = Room.objects.filter(members=request.user)
-        return render(request, 'messenger/messages.html', {'rooms': rooms_nofilter})
+        rooms_filter = Room.objects.filter(members=request.user)
+        if 'act' in request.GET.keys() and request.GET.get('act') == 'noread':
+            rooms_filter = Room.objects.filter(members=request.user, messages_room__read=False).distinct()
+        return render(request, 'messenger/messages.html', {'rooms': rooms_filter})
 
 class SearchRoom(View):
 

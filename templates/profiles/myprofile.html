@@ -7,6 +7,7 @@
                 <div class="">
                     <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'css/camera_200.png' %} {% endif %}" alt="" width="250" height="250">
                     <a class="btn btn-primary" href="{% url 'edit' %}" style="margin: 7%;">Редактировать профиль</a>
+                    <a class="btn btn-light" href="#" style="margin: 7%;">Статистика страницы</a>
                 </div>
                 <h5>Друзья</h5>
                 <div class="row">

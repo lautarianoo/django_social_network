@@ -64,5 +64,8 @@
                 {% endfor %}
             </div>
         </div>
+        <div class="col-4">
+            <a class="btn btn-light" href="{% url 'messages' %}?act=noread">Непрочитанные</a>
+        </div>
     </div>
 {% endblock profile %}

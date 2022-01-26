@@ -32,6 +32,12 @@ class RegisterForm(forms.ModelForm):
             raise forms.ValidationError('Пароли не совпадают')
         return data['password2']
 
+    def clean_username(self):
+        data = self.cleaned_data
+        if SocialUser.objects.filter(username=data['username']).exists():
+            raise forms.ValidationError('Пользователь с таким названием аккаунта уже существует.')
+        return data['username']
+
 class EditProfileForm(forms.Form):
 
     status = forms.CharField(max_length=150, required=False)

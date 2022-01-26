@@ -23,6 +23,7 @@ class Feed(models.Model):
     bgroup = models.BooleanField(verbose_name='Группа', default=False)
     likes = models.IntegerField(default=0, verbose_name='Кол-во лайков')
     date_add = models.DateTimeField(auto_now_add=True)
+    reposted = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.id}"

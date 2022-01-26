@@ -30,9 +30,7 @@ class ChatConsumer(WebsocketConsumer):
     def new_message(self, data):
 
         author = data['author']
-        friend = data.get('friend')
         author_user = User.objects.filter(username=author)[0]
-        friend_user = User.objects.filter(username=friend)[0]
         message = Message.objects.create(
             author=author_user,
             text=data['message'],
@@ -43,18 +41,6 @@ class ChatConsumer(WebsocketConsumer):
             'message': self.message_to_json(message)
         }
 
-        if not self.room.conference:
-            channel_layer = get_channel_layer()
-            channel = "notification_{}".format(friend_user.username)
-            async_to_sync(channel_layer.group_send)(
-                channel, {
-                    "type": "notify",
-                    "notification": {
-                        "title": "Сообщение",
-                        "body": author_user + " написал вам"
-                    }
-                }
-            )
         return self.send_chat_message(content)
 
     def typing_start(self, data):
