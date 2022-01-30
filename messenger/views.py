@@ -14,7 +14,7 @@ class AllMessages(View):
     def get(self, request, *args, **kwargs):
         rooms_filter = Room.objects.filter(members=request.user)
         if 'act' in request.GET.keys() and request.GET.get('act') == 'noread':
-            rooms_filter = Room.objects.filter(members=request.user, messages_room__read=False).distinct()
+            rooms_filter = [room for room in rooms_filter if room.noread_messages() != 0]
         return render(request, 'messenger/messages.html', {'rooms': rooms_filter})
 
 class SearchRoom(View):
@@ -54,7 +54,7 @@ class DialogAddView(View):
 
     def get(self, request, *args, **kwargs):
         second_member = SocialUser.objects.get(username=kwargs.get('username'))
-        title = f"{request.user.id} {second_member.id}"
+        title = f"{request.user.full_name} {second_member.full_name}"
         if not Room.objects.filter(Q(first_user=request.user, second_user=second_member) | Q(first_user=second_member, second_user=request.user)).exists():
             room = Room.objects.create(title=title)
             room.members.add(request.user)
