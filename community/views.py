@@ -78,6 +78,11 @@ class GroupView(View):
             group.save()
             return redirect('group', slug=kwargs.get('slug'))
 
+class GroupAdd(View):
+
+    def get(self, request, *args, **kwargs):
+        pass
+
 class DeleteFeedGroup(View):
 
     def get(self, request, *args, **kwargs):
