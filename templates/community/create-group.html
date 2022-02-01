@@ -5,7 +5,7 @@
         <form method="POST" enctype="multipart/form-data">{% csrf_token %}
             {% for category in categories %}
                 <div class="form-check">
-                    <input class="form-check-input" name="category" type="radio" id="category">
+                    <input class="form-check-input" name="category" type="checkbox" id="category" value="{{ category.title }}">
                     <label class="form-check-label" for="category">
                         {{ category.title }}
                     </label>
@@ -14,7 +14,8 @@
             <div class="form-group col-auto mt-4">
                     <input class="form-control" type="text" placeholder="Название беседы" name="title">
             </div>
-            <select name="thematic" class="form-select">
+            <label class="mt-2" for="themat">Тематика группы</label>
+            <select id="themat" name="thematic" class="form-select mt-2">
                 <option value="other" selected>Другое..</option>
                 <option value="edu">Образование</option>
                 <option value="tech">Техника</option>

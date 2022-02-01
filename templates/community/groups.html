@@ -11,7 +11,7 @@
                     <h5 class="m-2"><a>Управление {{ request.user.groups.count}}</a></h5>
                 </div>
                 <div class="col-4">
-                    <a href="#" style="text-decoration: none;"><h6 class="btn btn-primary">Создать сообщество</h6></a>
+                    <a href="{% url 'group-create' %}" style="text-decoration: none;"><h6 class="btn btn-primary">Создать сообщество</h6></a>
                 </div>
             </div>
             <form action="{% url 'search-groups' %}" class="w-100 me-3" method="get">

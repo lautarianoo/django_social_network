@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Group, InfoGroup
+from .models import Group, InfoGroup, CategoryGroup
 from profiles.models import PhotosUser
 from feed.forms import AddFeedForm
 from feed.models import Feed
@@ -81,7 +81,21 @@ class GroupView(View):
 class GroupAdd(View):
 
     def get(self, request, *args, **kwargs):
-        pass
+        categories = CategoryGroup.objects.all()
+        return render(request, 'community/create-group.html', {'categories': categories})
+
+    def post(self, request, *args, **kwargs):
+        data = request.POST
+
+        category = CategoryGroup.objects.filter(title=data.get('category'))[0]
+        new_group = Group.objects.create(category=category, title=data.get('title'), thematic=data.get('thematic'),
+                                         author=request.user)
+        infogroup = InfoGroup.objects.create()
+        new_group.infogroup = infogroup
+        if request.FILES:
+            new_group.avatar = request.FILES.get('avatar')
+        new_group.save()
+        return redirect('group', slug=new_group.slug)
 
 class DeleteFeedGroup(View):
 

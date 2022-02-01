@@ -34,17 +34,19 @@ class InfoGroup(models.Model):
 
 class Group(models.Model):
 
-    category = models.ForeignKey(CategoryGroup, verbose_name='Категория группы', on_delete=models.SET_NULL, null=True,
+    category = models.ForeignKey(CategoryGroup, verbose_name='Категория группы', on_delete=models.CASCADE,
                                  related_name='groups')
     title = models.CharField(max_length=120, verbose_name='Название группы')
-    thematic = models.CharField(verbose_name='Тематика группы', max_length=100, blank=True, null=True)
-    photos = models.ManyToManyField('profiles.PhotosUser', verbose_name='Фотографии', related_name='group', blank=True, null=True)
+    thematic = models.CharField(verbose_name='Тематика группы', max_length=100)
+    photos = models.ManyToManyField('profiles.PhotosUser', verbose_name='Фотографии', related_name='group', blank=True)
     author = models.ForeignKey(User, verbose_name='Автор группы', on_delete=models.SET_NULL, null=True, related_name='groupss')
-    feeds = models.ManyToManyField(Feed, verbose_name='Лента новостей', related_name='group', blank=True, null=True)
-    followers = models.ManyToManyField(User, verbose_name='Участники', related_name='group', blank=True, null=True)
-    applications = models.ManyToManyField(User, verbose_name='Заявки на вступление', related_name='app_group', blank=True, null=True)
+    feeds = models.ManyToManyField(Feed, verbose_name='Лента новостей', related_name='group', blank=True)
+    followers = models.ManyToManyField(User, verbose_name='Участники', related_name='group', blank=True)
+    applications = models.ManyToManyField(User, verbose_name='Заявки на вступление', related_name='app_group', blank=True)
     infogroup = models.ForeignKey(InfoGroup, verbose_name='Информация', related_name='groups', on_delete=models.SET_NULL, null=True)
     avatar = models.ImageField(verbose_name='Аватар группы')
+    banned = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
     slug = models.CharField(max_length=120, verbose_name='Прозвище группы', blank=True, null=True)
 
     def save(self, *args, **kwargs):
