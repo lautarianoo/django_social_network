@@ -48,3 +48,11 @@ class AddComment(View):
                 )
         return redirect('profile', slug=request.user.username)
 
+class RepostOnPageView(View):
+
+    def post(self, request, *args, **kwargs):
+        reposted_feed = Feed.objects.get(id=kwargs.get('id'))
+        new_feed = Feed.objects.create(reposted_feed=reposted_feed, reposted=True)
+        new_feed.save()
+        request.user.feeds.add(new_feed)
+        return redirect('profile', slug=request.user.username)

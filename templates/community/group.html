@@ -27,7 +27,7 @@
             <div class="card mt-2">
               <div class="card-body">
               <div class="row">
-                <h5 class="card-title m-2"><img src="{{ group.avatar.url }}" alt="" height="50" width="50"> {{ group.title }}</h5>
+                <h5 class="card-title m-2"><img src="{% if group.avatar %}{{ group.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" height="50" width="50"> {{ group.title }}</h5>
                   <a href="{% url 'feed' %}?w={{ feed.id }}" style="text-decoration: none; color: black;"><p class="card-text m-2">{{ feed.content }}</p></a>
               </div>
               <div class="card-title m-2" style="position:absolute;top:2%;right:2%;">
@@ -39,7 +39,26 @@
                 {% endif %}
               <div class="row">
                 <p class="m-2">Комментарии</p>
-                <p style="position:absolute;bottom:2%;left:70%;color: #8e908c">{{ feed.date_add }}</p>
+                <button type="button" data-toggle="modal" data-target="#exampleModal">
+                    Репост
+                </button>
+                  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Репост</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                              <a href="{% url 'repost-feed-page' id=feed.id %}"><button type="button" class="btn btn-secondary" data-dismiss="modal">На свою страницу</button></a>
+                            <button type="button" class="btn btn-primary">Отправить в сообщения</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                                    <p style="position:absolute;bottom:2%;left:70%;color: #8e908c">{{ feed.date_add }}</p>
               </div>
               </div>
             </div>
@@ -47,7 +66,7 @@
                 {% endif %}
             </div>
             <div class="col-3 m-2">
-                <img src="{{ group.avatar.url }}" alt="" width="250" height="350">
+                <img src="{% if group.avatar %}{{ group.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" width="250" height="350">
                 {% if request.user in group.followers.all %}
                     <a class="btn btn-success btn-block mt-2">Вы участник</a>
                     <a class="btn btn-danger mt-2" href="{% url 'unfollow-group' slug=group.slug %}">Отписаться</a>
@@ -96,7 +115,7 @@
             <div class="card mt-2">
               <div class="card-body">
               <div class="row">
-                <h5 class="card-title m-2"><img src="{{ group.avatar.url }}" alt="" height="50" width="50"> {{ group.title }}</h5>
+                <h5 class="card-title m-2"><img src="{% if group.avatar %}{{ group.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" height="50" width="50"> {{ group.title }}</h5>
                   <a href="{% url 'feed' %}?w={{ feed.id }}" style="text-decoration: none; color: black;"><p class="card-text m-2">{{ feed.content }}</p></a>
               </div>
               <div class="card-title m-2" style="position:absolute;top:2%;right:2%;">
@@ -116,7 +135,25 @@
                     {% endfor %}
                 {% endif %}
               <div class="row">
-                <p class="m-2">Комментарии</p>
+                <p class="m-2">Комментарии <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                    Репост
+                </button></p>
+               <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Репост</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                      <a href="{% url 'repost-feed-page' id=feed.id %}"><button type="button" class="btn btn-secondary" data-dismiss="modal">На свою страницу</button></a>
+                    <button type="button" class="btn btn-primary">Отправить в сообщения</button>
+                  </div>
+                </div>
+              </div>
+            </div>
                 <p style="position:absolute;bottom:2%;left:70%;color: #8e908c">{{ feed.date_add }}</p>
               </div>
               </div>
@@ -125,7 +162,7 @@
             </div>
         </div>
         <div class="col-3 m-2">
-            <img src="{{ group.avatar.url }}" alt="" width="250" height="350">
+            <img src="{% if group.avatar %}{{ group.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" alt="" width="250" height="350">
             {% if request.user in group.followers.all %}
                 <a class="btn btn-success btn-block mt-2">Вы подписаны</a>
                 <a class="btn btn-danger mt-2" href="{% url 'unfollow-group' slug=group.slug %}">Отписаться</a>

@@ -86,8 +86,8 @@ class GroupAdd(View):
 
     def post(self, request, *args, **kwargs):
         data = request.POST
-
-        category = CategoryGroup.objects.filter(title=data.get('category'))[0]
+        print(data)
+        category = CategoryGroup.objects.get(id=data.get('category'))
         new_group = Group.objects.create(category=category, title=data.get('title'), thematic=data.get('thematic'),
                                          author=request.user)
         infogroup = InfoGroup.objects.create()

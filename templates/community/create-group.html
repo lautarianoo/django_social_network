@@ -5,7 +5,7 @@
         <form method="POST" enctype="multipart/form-data">{% csrf_token %}
             {% for category in categories %}
                 <div class="form-check">
-                    <input class="form-check-input" name="category" type="checkbox" id="category" value="{{ category.title }}">
+                    <input class="form-check-input" name="category" type="radio" id="category" value="{{ category.id }}">
                     <label class="form-check-label" for="category">
                         {{ category.title }}
                     </label>
