@@ -74,6 +74,8 @@
                     </form>
                 <hr>
                 {% for feed in feedss %}
+                    {% if not feed.reposted %}
+
                 <div class="card mt-2">
               <div class="card-body">
               <div class="row">
@@ -97,11 +99,74 @@
                     {% endfor %}
                 {% endif %}
               <div class="row">
-                <p class="m-2">Комментарии</p>
+                <p class="m-2">Комментарии </p>
+
                 <p style="position:absolute;bottom:2%;left:70%;color: #8e908c">{{ feed.date_add }}</p>
               </div>
               </div>
             </div>
+               {% else %}
+
+                    <div class="card mt-2">
+              <div class="card-body">
+              <div class="row">
+                <h5 class="card-title m-2"><img src="{{ user.avatar.url }}" alt="" height="50" width="50"> {{ user.first_name }} {{ user.last_name }}</h5>
+                  <a href="{% url 'feed' %}?w={{ feed.reposted_feed.id }}" style="text-decoration: none; color: black;">
+
+
+                      <div class="card mt-2">
+              <div class="card-body">
+              <div class="row">
+                <h5 class="card-title m-2">
+                    {% if not feed.reposted_feed.bgroup %}
+                        <img src="{{ feed.reposted_feed.user.avatar.url }}" alt="" height="50" width="50"> {{ feed.reposted_feed.user.first_name }} {{ feed.reposted_feed.user.last_name }}
+                    {% else %}
+                        <img src="{{ feed.reposted_feed.group.avatar.url }}" alt="" height="50" width="50"> {{ feed.reposted_feed.group.title }}
+                    {% endif %}
+                </h5>
+                  <p class="card-text m-2">{{ feed.reposted_feed.content }}</p>
+              </div>
+              <div class="card-title m-2" style="position:absolute;top:2%;right:2%;">
+                                       <div class="flex-shrink-0 dropdown">
+              </div>
+                {% if feed.reposted_feed.images.all %}
+                    {% for photo in feed.reposted_feed.images.all %}
+                        <a href="{% url 'image' slug=feed.reposted_feed.group.slug %}?p={{ photo.slug }}"><img src="{{ photo.image.url }}" alt="" class="m-2" width="350" height="250"></a>
+                    {% endfor %}
+                {% endif %}
+              <div class="row">
+                <p style="position:absolute;bottom:2%;left:70%;color: #8e908c">{{ feed.reposted_feed.date_add }}</p>
+              </div>
+              </div>
+            </div>
+
+                  </a>
+              </div>
+              <div class="card-title m-2" style="position:absolute;top:2%;right:2%;">
+                                       <div class="flex-shrink-0 dropdown">
+          <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+          </a>
+          <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+            <li><a class="dropdown-item" href="{% url 'delete_feed' pk=feed.id %}">Удалить запись</a></li>
+            <li><a class="dropdown-item" href="#">Архивировать</a></li>
+            <li><a class="dropdown-item" href="">Выключить комментарии</a></li>
+          </ul>
+        </div>
+              </div>
+                {% if feed.images.all %}
+                    {% for photo in feed.images.all %}
+                        <a href="{% url 'image' slug=user.username %}?p={{ photo.slug }}"><img src="{{ photo.image.url }}" alt="" class="m-2" width="350" height="250"></a>
+                    {% endfor %}
+                {% endif %}
+              <div class="row">
+                <p class="m-2">Комментарии </p>
+
+                <p style="position:absolute;bottom:2%;left:70%;color: #8e908c">{{ feed.date_add }}</p>
+              </div>
+              </div>
+            </div>
+
+              {% endif %}
                 {% endfor %}
             </div>
         </div>
@@ -182,6 +247,7 @@
                 {% endif %}
                 </div>
                 {% for feed in feedss %}
+                    {% if not feed.reposted %}
                 <div class="card mt-2">
               <div class="card-body">
               <div class="row">
@@ -203,12 +269,83 @@
                     {% endfor %}
                 {% endif %}
                 <div class="row">
-                <p class="m-2">Комментарии</p>
+                <p class="m-2">Комментарии <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                    Репост
+                </button></p>
+
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Репост</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                      <a href="{% url 'repost-feed-page' id=feed.id %}"><button type="button" class="btn btn-secondary" data-dismiss="modal">На свою страницу</button></a>
+                    <button type="button" class="btn btn-primary">Отправить в сообщения</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
                 <p style="position:absolute;bottom:2%;left:70%;color: #8e908c">{{ feed.date_add }}</p>
               </div>
               </div>
             </div>
-                {% endfor %}
+
+             {% else %}
+
+                     <div class="card mt-2">
+              <div class="card-body">
+              <div class="row">
+                <h5 class="card-title m-2"><img src="{{ user2.avatar.url }}" alt="" height="50" width="50"> {{ user2.first_name }} {{ user2.last_name }}</h5>
+                <a href="{% url 'feed' %}?w={{ feed.id }}" style="text-decoration: none; color: black;"><p class="card-text m-2">{{ feed.content }}</p></a>
+              </div>
+                  <div class="card-title m-2" style="position:absolute;top:2%;right:2%;">
+                                       <div class="flex-shrink-0 dropdown">
+          <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+          </a>
+          <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+            <li><a class="dropdown-item" href="#">Пожаловаться</a></li>
+          </ul>
+        </div>
+              </div>
+                {% if feed.images.all %}
+                    {% for photo in feed.images.all %}
+                        <a href="{% url 'image' slug=user2.username %}?p={{ photo.slug }}"><img src="{{ photo.image.url }}" alt="" class="m-2" width="350" height="250"></a>
+                    {% endfor %}
+                {% endif %}
+                <div class="row">
+                <p class="m-2">Комментарии <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                    Репост
+                </button></p>
+
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Репост</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                      <a href="{% url 'repost-feed-page' id=feed.id %}"><button type="button" class="btn btn-secondary" data-dismiss="modal">На свою страницу</button></a>
+                    <button type="button" class="btn btn-primary">Отправить в сообщения</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+                <p style="position:absolute;bottom:2%;left:70%;color: #8e908c">{{ feed.date_add }}</p>
+              </div>
+              </div>
+            </div>
+
+             {% endif %}
+              {% endfor %}
                 </div>
             </div>
         </div>

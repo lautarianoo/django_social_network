@@ -14,6 +14,7 @@
   flex-wrap: wrap;
   align-items: center;
 }
+
 .message--user-1 + .message--user-2,
 .message--user-2 + .message--user-1 {
   margin-top: 1em;

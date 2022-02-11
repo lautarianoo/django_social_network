@@ -56,3 +56,4 @@ class RepostOnPageView(View):
         new_feed.save()
         request.user.feeds.add(new_feed)
         return redirect('profile', slug=request.user.username)
+
