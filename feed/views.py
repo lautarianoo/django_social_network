@@ -2,6 +2,7 @@ import json
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views import View
 from profiles.models import SocialUser
@@ -50,10 +51,16 @@ class AddComment(View):
 
 class RepostOnPageView(View):
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         reposted_feed = Feed.objects.get(id=kwargs.get('id'))
         new_feed = Feed.objects.create(reposted_feed=reposted_feed, reposted=True)
         new_feed.save()
         request.user.feeds.add(new_feed)
         return redirect('profile', slug=request.user.username)
 
+class NewsLentaView(View):
+
+    def get(self, request, *args, **kwargs):
+        news_user = Feed.objects.filter(Q(bgroup=True, feeds__group__followers=request.user) | Q(bgroup=False, user__friends=request.user))\
+            .order_by('-date_add')
+        return render(request, 'feed/news.html', {'news': news_user})

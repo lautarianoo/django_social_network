@@ -107,7 +107,7 @@
             </div>
                {% else %}
 
-                    <div class="card mt-2">
+                    <div class="card mt-2 mb-2">
               <div class="card-body">
               <div class="row">
                 <h5 class="card-title m-2"><img src="{{ user.avatar.url }}" alt="" height="50" width="50"> {{ user.first_name }} {{ user.last_name }}</h5>
@@ -134,9 +134,6 @@
                         <a href="{% url 'image' slug=feed.reposted_feed.group.slug %}?p={{ photo.slug }}"><img src="{{ photo.image.url }}" alt="" class="m-2" width="350" height="250"></a>
                     {% endfor %}
                 {% endif %}
-              <div class="row">
-                <p style="position:absolute;bottom:2%;left:70%;color: #8e908c">{{ feed.reposted_feed.date_add }}</p>
-              </div>
               </div>
             </div>
 
@@ -153,11 +150,6 @@
           </ul>
         </div>
               </div>
-                {% if feed.images.all %}
-                    {% for photo in feed.images.all %}
-                        <a href="{% url 'image' slug=user.username %}?p={{ photo.slug }}"><img src="{{ photo.image.url }}" alt="" class="m-2" width="350" height="250"></a>
-                    {% endfor %}
-                {% endif %}
               <div class="row">
                 <p class="m-2">Комментарии </p>
 
@@ -301,17 +293,9 @@
               <div class="card-body">
               <div class="row">
                 <h5 class="card-title m-2"><img src="{{ user2.avatar.url }}" alt="" height="50" width="50"> {{ user2.first_name }} {{ user2.last_name }}</h5>
-                <a href="{% url 'feed' %}?w={{ feed.id }}" style="text-decoration: none; color: black;"><p class="card-text m-2">{{ feed.content }}</p></a>
+                <a href="{% url 'feed' %}?w={{ feed.id }}" style="text-decoration: none; color: black;"><p class="card-text m-2">{{ feed.reposted_feed.content }}</p></a>
               </div>
-                  <div class="card-title m-2" style="position:absolute;top:2%;right:2%;">
-                                       <div class="flex-shrink-0 dropdown">
-          <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-          </a>
-          <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-            <li><a class="dropdown-item" href="#">Пожаловаться</a></li>
-          </ul>
-        </div>
-              </div>
+
                 {% if feed.images.all %}
                     {% for photo in feed.images.all %}
                         <a href="{% url 'image' slug=user2.username %}?p={{ photo.slug }}"><img src="{{ photo.image.url }}" alt="" class="m-2" width="350" height="250"></a>

@@ -37,7 +37,7 @@
                 <div class="card mb-3" style="max-width: 540px;">
                   <div class="row g-0">
                     <div class="col-md-4">
-                      <img src="{% if group.avatar %}{{ group.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" class="img-fluid rounded-start" alt="...">
+                        <a href="{% url 'group' slug=group.slug %}"><img src="{% if group.avatar %}{{ group.avatar.url }}{% else %}{% static 'css/camera_200.png' %}{% endif %}" class="img-fluid rounded-start" alt="..."></a>
                     </div>
                     <div class="col-md-8">
                       <div class="card-body">

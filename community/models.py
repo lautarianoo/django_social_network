@@ -51,8 +51,6 @@ class Group(models.Model):
 
     def save(self, *args, **kwargs):
         #
-        if not self.slug:
-            self.slug = f"public{self.id}"
         if self.avatar:
             image = self.avatar
             img = Image.open(image)

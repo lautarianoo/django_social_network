@@ -1,0 +1,129 @@
+{% extends 'base_for_templates.html' %}
+{% load static %}
+{% block profile %}
+    <div class="row">
+        <div class="col-7">
+            <section>
+         {% for newss in news %}
+         <div class="card" style="max-width: 42rem">
+           <div class="card-body">
+             <!-- Data -->
+             <div class="d-flex mb-3">
+               {% if newss.bgroup %}
+               <a href="{% url 'group' slug=newss.group.slug %}">
+                 <img src="{{ newss.group.avatar.url }}"
+                   class="border rounded-circle me-2" alt="Avatar" style="height: 40px" />
+               </a>
+               {% else %}
+                   <a href="{% url 'profile' slug=newss.user.slug %}">
+                 <img src="{{ newss.user.avatar.url }}"
+                   class="border rounded-circle me-2" alt="Avatar" style="height: 40px" />
+               </a>
+               {% endif %}
+               <div>
+                 <a href="" class="text-dark mb-0">
+                   <strong>{% if newss.bgroup %}{{ newss.group.title }}{% else %}{{ newss.user.full_name }}{% endif %}</strong>
+                 </a>
+                 <a href="" class="text-muted d-block" style="margin-top: -6px">
+                   <small>{{ newss.date_add }}</small>
+                 </a>
+               </div>
+             </div>
+             <!-- Description -->
+             <div>
+               <p>
+                   {{ newss.content }}
+               </p>
+             </div>
+           </div>
+           <!-- Media -->
+            {% if feed.images.all %}
+                {% for image in feed.images.all %}
+           <div class="bg-image hover-overlay ripple rounded-0" data-mdb-ripple-color="light">
+             <img src="{{ image.image.url }}" class="w-100" />
+             <a href="{% url 'image' slug=image.slug %}">
+               <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
+             </a>
+           </div>
+                {% endfor %}
+            {% endif %}
+           <!-- Media -->
+           <!-- Interactions -->
+           <div class="card-body">
+             <!-- Reactions -->
+             <div class="d-flex justify-content-between mb-3">
+               <div>
+                 <a href="">
+                   <i class="fas fa-thumbs-up text-primary"></i>
+                   <i class="fas fa-heart text-danger"></i>
+                   <span>{{ newss.likes }}</span>
+                 </a>
+               </div>
+               <div>
+                 <a href="" class="text-muted"> {{ newss.comments.count }} comments </a>
+               </div>
+             </div>
+             <!-- Reactions -->
+
+             <!-- Buttons -->
+             <div class="d-flex justify-content-between text-center border-top border-bottom mb-4">
+               <button type="button" class="btn btn-link btn-lg" data-mdb-ripple-color="dark">
+                 <i class="fas fa-thumbs-up me-2"></i>
+               </button>
+               <button type="button" class="btn btn-link btn-lg" data-mdb-ripple-color="dark">
+                 <i class="fas fa-comment-alt me-2"></i>
+               </button>
+               <button type="button" class="btn btn-link btn-lg" data-mdb-ripple-color="dark">
+                 <i class="fas fa-share me-2"></i>
+               </button>
+             </div>
+             <!-- Buttons -->
+
+             <!-- Comments -->
+
+             <!-- Input -->
+             <div class="d-flex mb-3">
+               <a href="">
+                 <img src="https://mdbcdn.b-cdn.net/img/new/avatars/18.webp"
+                   class="border rounded-circle me-2" alt="Avatar" style="height: 40px" />
+               </a>
+               <div class="form-outline w-100">
+                 <textarea class="form-control" id="textAreaExample" rows="2"></textarea>
+                 <label class="form-label" for="textAreaExample">Write a comment</label>
+               </div>
+             </div>
+             <!-- Input -->
+
+             <!-- Answers -->
+
+             <!-- Single answer -->
+             <div class="d-flex mb-3">
+               <a href="">
+                 <img src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp"
+                   class="border rounded-circle me-2" alt="Avatar" style="height: 40px" />
+               </a>
+               <div>
+                 <div class="bg-light rounded-3 px-3 py-1">
+                   <a href="" class="text-dark mb-0">
+                     <strong></strong>
+                   </a>
+                   <a href="" class="text-muted d-block">
+                     <small></small>
+                   </a>
+                 </div>
+                 <a href="" class="text-muted small ms-3 me-2"><strong></strong></a>
+                 <a href="" class="text-muted small me-2"><strong></strong></a>
+               </div>
+             </div>
+
+             <!-- Answers -->
+
+             <!-- Comments -->
+           </div>
+           <!-- Interactions -->
+         </div>
+        {% endfor %}
+        </section>
+               </div>
+           </div>
+{% endblock profile %}

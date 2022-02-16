@@ -86,14 +86,16 @@ class GroupAdd(View):
 
     def post(self, request, *args, **kwargs):
         data = request.POST
-        print(data)
         category = CategoryGroup.objects.get(id=data.get('category'))
         new_group = Group.objects.create(category=category, title=data.get('title'), thematic=data.get('thematic'),
                                          author=request.user)
+        new_group.followers.add(request.user)
         infogroup = InfoGroup.objects.create()
         new_group.infogroup = infogroup
         if request.FILES:
             new_group.avatar = request.FILES.get('avatar')
+        new_group.save()
+        new_group.slug = f"public{new_group.id}"
         new_group.save()
         return redirect('group', slug=new_group.slug)
 
