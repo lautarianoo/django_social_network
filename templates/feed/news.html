@@ -15,7 +15,7 @@
                    class="border rounded-circle me-2" alt="Avatar" style="height: 40px" />
                </a>
                {% else %}
-                   <a href="{% url 'profile' slug=newss.user.slug %}">
+                   <a href="{% url 'profile' slug=newss.user.username %}">
                  <img src="{{ newss.user.avatar.url }}"
                    class="border rounded-circle me-2" alt="Avatar" style="height: 40px" />
                </a>

@@ -11,6 +11,7 @@ from feed.forms import CommentForm
 from community.models import Group
 from notification.models import Notification
 from notification.serializers import NotificationSerializer
+from .utlis import filternews
 
 class FeedView(View):
 
@@ -61,6 +62,6 @@ class RepostOnPageView(View):
 class NewsLentaView(View):
 
     def get(self, request, *args, **kwargs):
-        news_user = Feed.objects.filter(Q(bgroup=True, feeds__group__followers=request.user) | Q(bgroup=False, user__friends=request.user))\
-            .order_by('-date_add')
+        news_user = filternews(request.user)
+        print(news_user)
         return render(request, 'feed/news.html', {'news': news_user})
