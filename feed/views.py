@@ -63,5 +63,5 @@ class NewsLentaView(View):
 
     def get(self, request, *args, **kwargs):
         news_user = filternews(request.user)
-        print(news_user)
+        print(news_user[0].user.username)
         return render(request, 'feed/news.html', {'news': news_user})

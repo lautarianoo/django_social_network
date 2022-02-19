@@ -9,9 +9,11 @@ def filternews(user):
     group_subscribe = Group.objects.filter(followers__in=[user]).distinct()
     for group in group_subscribe:
         for news in group.feeds.all():
-            no_sorted_news.append(news)
-    friends_subscribe_user = SocialUser.objects.filter(Q(friends__in=[user]) & Q(subscribers__subscribers__in=[user])).distinct()
+            if news.user != user:
+                no_sorted_news.append(news)
+    friends_subscribe_user = SocialUser.objects.filter(Q(friends__in=[user]) | Q(subscribers__subscribers__in=[user])).distinct()
     for profile in friends_subscribe_user:
         for news in profile.feeds.all():
-            no_sorted_news.append(news)
+            if news.user != user:
+                no_sorted_news.append(news)
     return no_sorted_news
